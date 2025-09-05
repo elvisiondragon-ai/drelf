@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* DRELF.ID Luxury Collagen Design System - Rose Gold & Pearl White Aesthetic */
+
+@layer base {
+  :root {
+    /* Brand Colors - Luxury Wellness Palette */
+    --background: 40 20% 97%; /* Pearl White #F8F6F0 */
+    --foreground: 0 0% 36%; /* Warm Gray #5D5D5D */
+
+    --card: 40 20% 97%;
+    --card-foreground: 0 0% 36%;
+
+    --popover: 40 20% 97%;
+    --popover-foreground: 0 0% 36%;
+
+    /* Rose Gold Primary */
+    --primary: 350 35% 82%; /* Rose Gold #E8B4B8 */
+    --primary-foreground: 40 20% 97%;
+
+    /* Soft Lavender Secondary */
+    --secondary: 240 67% 94%; /* Soft Lavender #E6E6FA */
+    --secondary-foreground: 0 0% 36%;
+
+    /* Blush Pink Muted */
+    --muted: 340 100% 86%; /* Blush Pink #FFB6C1 */
+    --muted-foreground: 0 0% 45%;
+
+    /* Deep Teal Accent for Meditation */
+    --accent: 180 100% 27%; /* Deep Teal #008B8B */
+    --accent-foreground: 40 20% 97%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 40 20% 97%;
+
+    --border: 350 35% 88%;
+    --input: 350 35% 88%;
+    --ring: 350 35% 82%;
+
+    --radius: 1rem;
+
+    /* Luxury Design Tokens */
+    --rose-gold: 350 35% 82%;
+    --rose-gold-light: 350 35% 88%;
+    --rose-gold-dark: 350 35% 75%;
+    
+    --pearl-white: 40 20% 97%;
+    --pearl-cream: 40 15% 94%;
+    
+    --lavender: 240 67% 94%;
+    --lavender-soft: 240 50% 96%;
+    
+    --blush: 340 100% 86%;
+    --blush-light: 340 100% 90%;
+    
+    --teal-meditation: 180 100% 27%;
+    --teal-light: 180 50% 85%;
+    
+    --warm-gray: 0 0% 36%;
+    --warm-gray-light: 0 0% 55%;
+
+    /* Luxury Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--rose-gold)) 0%, hsl(var(--pearl-white)) 50%, hsl(var(--lavender)) 100%);
+    --gradient-rose: linear-gradient(45deg, hsl(var(--rose-gold-light)) 0%, hsl(var(--rose-gold)) 100%);
+    --gradient-zen: linear-gradient(180deg, hsl(var(--teal-light)) 0%, hsl(var(--teal-meditation)) 100%);
+    --gradient-luxury: linear-gradient(135deg, hsl(var(--pearl-white)) 0%, hsl(var(--blush-light)) 100%);
+
+    /* Elegant Shadows */
+    --shadow-luxury: 0 10px 40px -10px hsl(var(--rose-gold) / 0.3);
+    --shadow-soft: 0 5px 20px -5px hsl(var(--rose-gold) / 0.15);
+    --shadow-meditation: 0 8px 30px -8px hsl(var(--teal-meditation) / 0.25);
+
+    /* Smooth Animations */
+    --transition-luxury: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-soft: all 0.3s ease-out;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-light;
+    background: var(--gradient-luxury);
+  }
+}
+
+/* Custom Component Styles */
+@layer components {
+  .luxury-card {
+    @apply backdrop-blur-sm border-rose-gold/20;
+    background: hsl(var(--pearl-white) / 0.8);
+    box-shadow: var(--shadow-luxury);
+  }
+  
+  .zen-gradient {
+    background: var(--gradient-zen);
+  }
+  
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  .rose-gradient {
+    background: var(--gradient-rose);
+  }
+}
