@@ -3,6 +3,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Star, Shield, Award, Clock } from "lucide-react";
+import produk1Image from "@/assets/produk1.png";
+import produk2Image from "@/assets/produk2.png";
+import produk3Image from "@/assets/produk3.png";
 
 const products = [
   {
@@ -10,39 +13,17 @@ const products = [
     subtitle: "Untuk Stres Ringan",
     price: "Rp 589.000",
     purity: 98,
-    potency: "10,000mg",
+    potency: "5,000mg",
     timeline: "2-4 minggu",
     benefits: ["Kulit lebih halus", "Hidrasi optimal", "Glow alami"],
     stress_level: "ringan",
     badge: "Best Seller"
-  },
-  {
-    name: "Drelf Collagen Serenity",
-    subtitle: "Untuk Stres Menengah", 
-    price: "Rp 789.000",
-    purity: 99,
-    potency: "15,000mg",
-    timeline: "3-6 minggu",
-    benefits: ["Elastisitas kulit", "Mengurangi fine lines", "Inner calm"],
-    stress_level: "menengah",
-    badge: "Premium"
-  },
-  {
-    name: "Drelf Collagen Zen Master",
-    subtitle: "Untuk Stres Tinggi",
-    price: "Rp 989.000", 
-    purity: 99.5,
-    potency: "20,000mg",
-    timeline: "4-8 minggu",
-    benefits: ["Regenerasi sel kulit", "Anti-aging maksimal", "Deep meditation"],
-    stress_level: "tinggi",
-    badge: "Luxury"
   }
 ];
 
 export default function Product() {
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-32">
       {/* Header */}
       <header className="hero-gradient py-8">
         <div className="container mx-auto px-4 text-center">
@@ -54,6 +35,77 @@ export default function Product() {
           </p>
         </div>
       </header>
+
+      {/* Product Hero Image */}
+      <section className="container mx-auto px-4 py-4">
+        <div className="text-center mb-6">
+          <img 
+            src={produk2Image} 
+            alt="Drelf Collagen Ultimate" 
+            className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
+          />
+        </div>
+      </section>
+
+      {/* Product Details */}
+      <section className="container mx-auto px-4 py-8">
+        <Card className="luxury-card p-6 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-warm-gray mb-4">Drelf Collagen Ultimate</h2>
+          </div>
+          
+          {/* Ingredients */}
+          <div className="mb-8">
+            <h3 className="text-lg font-bold text-warm-gray mb-4">INGREDIENTS</h3>
+            <div className="space-y-2 text-sm text-warm-gray-light">
+              <p>- 정제 설탕 Refined Sugar</p>
+              <p>- 제비집 추출물 Sarang Burung Walet</p>
+              <p>- 비타민 프리믹스 Vitamin Premix</p>
+              <p>- 과일 및 채소 추출물 Fruit and Vegetable Extract</p>
+              <p>- 딸기 추출물 Strawberry Extract</p>
+              <p>- L-글루타티온 L-Glutathione</p>
+              <p>- 어류 콜라겐 Collagen 5000mg per serving</p>
+              <p>- 사프란 Saffron</p>
+            </div>
+          </div>
+
+          {/* Product Images */}
+          <div className="mb-8">
+            <div className="flex flex-col gap-4">
+              <img 
+                src={produk1Image} 
+                alt="Product 1" 
+                className="w-full max-w-md mx-auto rounded-lg shadow-md"
+              />
+              <img 
+                src={produk3Image} 
+                alt="Product 3" 
+                className="w-full max-w-md mx-auto rounded-lg shadow-md"
+              />
+            </div>
+          </div>
+
+          {/* Pricing Info */}
+          <div className="text-center space-y-4 mb-8">
+            <div>
+              <h3 className="text-lg font-bold text-warm-gray">HARGA</h3>
+              <p className="text-sm text-warm-gray-light line-through">Rp 750.000</p>
+              <p className="text-2xl font-bold text-rose-gold">Rp 600.000</p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-bold text-warm-gray">KEMASAN</h3>
+              <p className="text-warm-gray-light">10 Sachet</p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-bold text-warm-gray">ANJURAN PAKAI</h3>
+              <p className="text-warm-gray-light">1x sehari, maksimal</p>
+            </div>
+          </div>
+
+        </Card>
+      </section>
 
       {/* Products Grid */}
       <section className="container mx-auto px-4 py-8">

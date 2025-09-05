@@ -2,6 +2,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Headphones, Clock, Heart, Brain, Sparkles } from "lucide-react";
+import drelf4Image from "@/assets/drelf4.png";
+import drelf5Image from "@/assets/drelf5.png";
 
 const meditationPractices = [
   {
@@ -75,7 +77,7 @@ const stressTechniques = [
 
 export default function Meditate() {
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-32">
       {/* Header */}
       <header className="hero-gradient py-8">
         <div className="container mx-auto px-4 text-center">
@@ -87,6 +89,52 @@ export default function Meditate() {
           </p>
         </div>
       </header>
+
+      {/* Video Player */}
+      <section className="container mx-auto px-4 py-8">
+        <Card className="luxury-card p-6 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-warm-gray mb-4">Beauty is Meditate</h2>
+          </div>
+          
+          {/* Video Player */}
+          <div className="mb-8">
+            <div className="aspect-[9/16] max-w-sm mx-auto rounded-lg overflow-hidden shadow-lg">
+              <video 
+                controls 
+                className="w-full h-full object-cover"
+              >
+                <source src="https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/rus.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          {/* Why Meditate Content */}
+          <div className="space-y-4 mb-8">
+            <h3 className="text-lg font-bold text-warm-gray text-center">
+              Why meditate 70% of beauty
+            </h3>
+            <p className="text-center text-warm-gray-light">
+              bahkan semua skin care jutaan sia sia jika kulit stress
+            </p>
+          </div>
+
+          {/* Drelf Images */}
+          <div className="grid grid-cols-2 gap-6 max-w-lg mx-auto">
+            <img 
+              src={drelf4Image} 
+              alt="Drelf Beauty 4" 
+              className="w-full h-48 object-cover rounded-lg shadow-md"
+            />
+            <img 
+              src={drelf5Image} 
+              alt="Drelf Beauty 5" 
+              className="w-full h-48 object-cover rounded-lg shadow-md"
+            />
+          </div>
+        </Card>
+      </section>
 
       {/* Mind-Skin Connection */}
       <section className="container mx-auto px-4 py-8">
@@ -125,23 +173,17 @@ export default function Meditate() {
         <div className="space-y-4">
           {meditationPractices.map((practice, index) => (
             <Card key={index} className="luxury-card p-5">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="font-semibold text-warm-gray mb-1">{practice.title}</h3>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="outline" className="text-xs">
-                      <Clock size={10} className="mr-1" />
-                      {practice.duration}
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      {practice.level}
-                    </Badge>
-                  </div>
+              <div className="mb-3">
+                <h3 className="font-semibold text-warm-gray mb-1">{practice.title}</h3>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="outline" className="text-xs">
+                    <Clock size={10} className="mr-1" />
+                    {practice.duration}
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {practice.level}
+                  </Badge>
                 </div>
-                <Button variant="zen" size="sm">
-                  <Play size={14} className="mr-1" />
-                  Preview
-                </Button>
               </div>
               
               <div className="bg-lavender-soft/50 rounded-lg p-3 mb-3">
@@ -201,15 +243,9 @@ export default function Meditate() {
             </div>
             
             <div className="bg-pearl-white/80 rounded-lg p-4 mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-warm-gray text-sm">Inner Radiance Meditation</p>
-                  <p className="text-xs text-warm-gray-light">Guided by Master Yuli, 12 min</p>
-                </div>
-                <Button variant="zen" size="sm">
-                  <Play size={16} className="mr-1" />
-                  Play Sample
-                </Button>
+              <div className="text-center">
+                <p className="font-medium text-warm-gray text-sm">Inner Radiance Meditation</p>
+                <p className="text-xs text-warm-gray-light">Guided by Master Yuli, 12 min</p>
               </div>
             </div>
             

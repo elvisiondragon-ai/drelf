@@ -6,20 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { QrCode, MessageCircle, Users, Calendar, Play, Gift } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import checkout1Image from "@/assets/checkout1.png";
 
 const selectedPackage = {
-  name: "Drelf Collagen Zen Master",
+  name: "Drelf Collagen Ultimate",
   subtitle: "Beauty Journey Complete Package",
-  price: 989000,
-  originalPrice: 1200000,
-  discount: 18,
-  duration: "3 bulan supply",
+  price: 600000,
+  originalPrice: 750000,
+  discount: 20,
+  duration: "1 box supply",
   includes: [
-    "Drelf Collagen Zen Master (3 bottles)",
+    "Drelf Collagen 1 Box 10 Sachet",
     "Exclusive Beauty Meditation Audio Guide (12 sessions)", 
     "Personal Beauty Consultation (WhatsApp)",
     "Mindful Beauty Circle Community Access",
-    "Beauty Timeline Tracker App"
+    "Beauty Timeline Tracker App",
+    "Garansi Kepuasan"
   ]
 };
 
@@ -44,7 +47,7 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-32">
       {/* Header */}
       <header className="hero-gradient py-6">
         <div className="container mx-auto px-4 text-center">
@@ -60,6 +63,15 @@ export default function Checkout() {
       {/* Package Summary */}
       <section className="container mx-auto px-4 py-6">
         <Card className="luxury-card p-6 mb-6">
+          {/* Product Image */}
+          <div className="text-center mb-6">
+            <img 
+              src={checkout1Image} 
+              alt="Drelf Collagen Ultimate Product" 
+              className="w-full max-w-md mx-auto rounded-lg shadow-lg"
+            />
+          </div>
+          
           <div className="flex justify-between items-start mb-4">
             <div>
               <h2 className="text-lg font-bold text-warm-gray mb-1">{selectedPackage.name}</h2>
@@ -118,15 +130,9 @@ export default function Checkout() {
           </div>
 
           <div className="bg-pearl-cream rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-warm-gray text-sm">Preview Sample:</p>
-                <p className="text-xs text-warm-gray-light">Inner Radiance Meditation - 2 min sample</p>
-              </div>
-              <Button variant="zen" size="sm">
-                <Play size={14} className="mr-1" />
-                Play
-              </Button>
+            <div className="text-center">
+              <p className="font-medium text-warm-gray text-sm">Preview Sample:</p>
+              <p className="text-xs text-warm-gray-light">Inner Radiance Meditation - 2 min sample</p>
             </div>
           </div>
         </Card>
@@ -165,29 +171,12 @@ export default function Checkout() {
                   <span className="text-xs text-white">B</span>
                 </div>
                 <div>
-                  <p className="font-medium text-warm-gray">Bank Transfer</p>
+                  <p className="font-medium text-warm-gray">Virtual Bank</p>
                   <p className="text-xs text-warm-gray-light">BCA, Mandiri, BRI, BNI</p>
                 </div>
               </div>
             </div>
 
-            <div 
-              className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                selectedPayment === 'installment' ? 'border-rose-gold bg-rose-gold/10' : 'border-gray-200'
-              }`}
-              onClick={() => setSelectedPayment('installment')}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Calendar size={24} className="text-warm-gray" />
-                  <div>
-                    <p className="font-medium text-warm-gray">Cicilan 3x</p>
-                    <p className="text-xs text-warm-gray-light">{formatPrice(selectedPackage.price / 3)}/bulan</p>
-                  </div>
-                </div>
-                <Badge variant="secondary" className="text-xs">0% Interest</Badge>
-              </div>
-            </div>
           </div>
         </Card>
 
@@ -222,7 +211,12 @@ export default function Checkout() {
               <MessageCircle size={24} className="mx-auto text-rose-gold mb-2" />
               <p className="font-medium text-warm-gray text-sm mb-1">Beauty Consultation</p>
               <p className="text-xs text-warm-gray-light">WhatsApp CS 24/7</p>
-              <Button variant="pearl" size="sm" className="mt-2 w-full">
+              <Button 
+                variant="pearl" 
+                size="sm" 
+                className="mt-2 w-full"
+                onClick={() => window.open('https://wa.me/628980040002?text=Kak%20mau%20tanya%20Drelf', '_blank')}
+              >
                 Chat Now
               </Button>
             </div>
@@ -279,12 +273,27 @@ export default function Checkout() {
             variant="hero" 
             size="xl" 
             className="w-full"
-            disabled={!selectedPayment}
+            onClick={() => {
+              if (selectedPayment) {
+                // Handle payment logic here
+              } else {
+                toast.error('Stok habis silahkan check reseller kami di Marketplaces / Google !', {
+                  className: "text-lg font-bold bg-pink-500/20 border-pink-500/50 text-pink-900 backdrop-blur-sm",
+                  style: {
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    padding: '20px',
+                    minHeight: '80px',
+                    backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                    backdropFilter: 'blur(8px)',
+                    color: '#831843',
+                    border: '2px solid rgba(236, 72, 153, 0.5)',
+                  }
+                });
+              }
+            }}
           >
-            {selectedPayment === 'qris' && 'Scan QRIS & Complete Order'}
-            {selectedPayment === 'transfer' && 'Proceed to Bank Transfer'}
-            {selectedPayment === 'installment' && 'Setup Installment Plan'}
-            {!selectedPayment && 'Pilih Metode Pembayaran'}
+            Bayar Sekarang
           </Button>
           
           <p className="text-center text-xs text-warm-gray-light">

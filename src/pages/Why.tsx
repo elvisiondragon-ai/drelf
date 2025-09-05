@@ -2,6 +2,17 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Shield, Users, Award, Star, ChevronRight } from "lucide-react";
+import produk1Image from "@/assets/produk1.png";
+import produk2Image from "@/assets/produk2.png";
+import produk3Image from "@/assets/produk3.png";
+import why1Image from "@/assets/why1.png";
+import why2Image from "@/assets/why2.png";
+import why3Image from "@/assets/why3.png";
+import testimony1 from "@/assets/1.jpeg";
+import testimony2 from "@/assets/2.jpeg";
+import testimony3 from "@/assets/3.jpeg";
+import testimony4 from "@/assets/4.jpeg";
+import testimony5 from "@/assets/5.jpeg";
 
 const scientificStudies = [
   {
@@ -63,7 +74,7 @@ const qualityStandards = [
     icon: Award,
     title: "Manufacturing Excellence",
     description: "cGMP certified facility, ISO 22000, third-party tested purity",
-    certification: "FDA Approved"
+    certification: "BPOM Approved"
   },
   {
     icon: TrendingUp,
@@ -75,7 +86,7 @@ const qualityStandards = [
 
 export default function Why() {
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-32">
       {/* Header */}
       <header className="hero-gradient py-8">
         <div className="container mx-auto px-4 text-center">
@@ -87,6 +98,166 @@ export default function Why() {
           </p>
         </div>
       </header>
+
+      {/* Product Images */}
+      <section className="container mx-auto px-4 py-4">
+        <div className="flex flex-col gap-4 mb-6 max-w-xs mx-auto">
+          <img 
+            src={produk1Image} 
+            alt="Product 1" 
+            className="w-full rounded-lg shadow-md"
+          />
+          <img 
+            src={produk3Image} 
+            alt="Product 3" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+        </div>
+        
+        <div className="text-center mb-8">
+          <p className="text-lg font-bold text-warm-gray mb-4">
+            "가장 큰 투자는 바로 자신에게 하는 투자입니다.
+          </p>
+          <p className="text-lg font-bold text-warm-gray">
+            Investasi terbesar adalah dirimu sendiri."
+          </p>
+        </div>
+
+        {/* Why Images */}
+        <div className="flex flex-col gap-4 mb-8 max-w-xs mx-auto">
+          <img 
+            src={why1Image} 
+            alt="Why 1" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+          <img 
+            src={why2Image} 
+            alt="Why 2" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+          <img 
+            src={why3Image} 
+            alt="Why 3" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="container mx-auto px-4 py-8">
+        <Card className="luxury-card p-6 mb-8">
+          <h2 className="text-xl font-bold text-warm-gray mb-6 text-center">
+            Jadi Jika anda Ingin:
+          </h2>
+          
+          <div className="space-y-3 mb-8">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Awet muda karena kaya akan antioksidan</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Kulit lebih putih dan cerah secara alami</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Kulit lebih kencang dan elastis</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Mengurangi kerutan dan garis halus</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Meningkatkan kelembaban kulit</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Mempercepat regenerasi sel kulit</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Melindungi kulit dari kerusakan UV</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Memperbaiki tekstur kulit tidak merata</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Mengurangi noda hitam dan bekas jerawat</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 rounded-full rose-gradient mt-2 flex-shrink-0"></div>
+              <p className="text-warm-gray-light">Meningkatkan kesehatan kulit dari dalam</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-warm-gray text-center">
+              DRELF adalah solusi tepat karena:
+            </h3>
+            
+            <div className="space-y-2">
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full zen-gradient mt-2 flex-shrink-0"></div>
+                <p className="text-warm-gray-light">Formula berbasis ilmiah</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full zen-gradient mt-2 flex-shrink-0"></div>
+                <p className="text-warm-gray-light">Bahan aktif terstandarisasi</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full zen-gradient mt-2 flex-shrink-0"></div>
+                <p className="text-warm-gray-light">Teruji secara klinis</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full zen-gradient mt-2 flex-shrink-0"></div>
+                <p className="text-warm-gray-light">Aman untuk penggunaan jangka panjang</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full zen-gradient mt-2 flex-shrink-0"></div>
+                <p className="text-warm-gray-light">Hasil terlihat dalam 2-4 minggu pemakaian rutin</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Testimony Photos */}
+        <div className="text-center mb-4">
+          <h3 className="text-lg font-bold text-warm-gray mb-6">
+            Testimoni Pelanggan
+          </h3>
+        </div>
+        
+        <div className="flex flex-col gap-4 mb-8 max-w-sm mx-auto">
+          <img 
+            src={testimony1} 
+            alt="Testimony 1" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+          <img 
+            src={testimony2} 
+            alt="Testimony 2" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+          <img 
+            src={testimony3} 
+            alt="Testimony 3" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+          <img 
+            src={testimony4} 
+            alt="Testimony 4" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+          <img 
+            src={testimony5} 
+            alt="Testimony 5" 
+            className="w-full aspect-square object-cover rounded-lg shadow-md"
+          />
+        </div>
+      </section>
 
       {/* Scientific Studies */}
       <section className="container mx-auto px-4 py-8">
@@ -223,7 +394,7 @@ export default function Why() {
               <blockquote className="text-sm text-warm-gray-light italic mb-4 leading-relaxed">
                 "DRELF mengubah perspektif saya tentang beauty. Ini bukan hanya tentang penampilan, tapi tentang inner peace yang memancar keluar. Revolutionary!"
               </blockquote>
-              <p className="font-semibold text-warm-gray">— Luna Maya</p>
+              <p className="font-semibold text-warm-gray">— Celebrity Customer</p>
               <p className="text-xs text-warm-gray-light">Actress & Wellness Advocate</p>
             </div>
           </Card>

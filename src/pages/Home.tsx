@@ -2,17 +2,30 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Sparkles, Heart, Zap } from "lucide-react";
 import heroImage from "@/assets/hero-zen-garden.jpg";
+import home1Image from "@/assets/home1.png";
+import siteIcon from "@/assets/siteicon.png";
 
 export default function Home() {
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-32">
       {/* Header */}
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 hero-gradient opacity-90"></div>
         <div className="container mx-auto px-4 py-8 relative z-10">
           <div className="text-center mb-8">
+            <img 
+              src={siteIcon} 
+              alt="Drelf Site Logo" 
+              className="w-16 h-16 mx-auto mb-4 rounded-lg shadow-lg"
+            />
             <h1 className="text-3xl font-bold text-warm-gray mb-2">DRELF.ID</h1>
-            <p className="text-warm-gray-light">Kolagen Luxury with Meditation Guide</p>
+            <div className="space-y-2">
+              <p className="text-xl font-bold text-warm-gray">Claimable</p>
+              <p className="text-lg font-semibold text-warm-gray">Pertama di Dunia</p>
+              <p className="text-lg text-warm-gray-light">Minuman Kolagen Holistik</p>
+              <p className="text-sm text-warm-gray-light">Garansi Kepuasan</p>
+              <p className="text-lg font-semibold text-warm-gray mt-4">Rahasia Kecantikan Sejati Yang mereka sembunyikan</p>
+            </div>
           </div>
         </div>
       </header>
@@ -21,26 +34,39 @@ export default function Home() {
       <section className="relative -mt-4">
         <div className="relative h-96 overflow-hidden rounded-t-3xl">
           <img 
-            src={heroImage} 
-            alt="Zen Garden with Collagen Particles" 
+            src={home1Image} 
+            alt="Drelf Beauty Products" 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent">
-            <div className="container mx-auto px-4 h-full flex flex-col justify-end pb-8">
-              <div className="text-center text-white">
-                <h2 className="text-2xl font-bold mb-2">
-                  Kecantikan Dimulai dari Dalam
-                </h2>
-                <p className="text-lg mb-4 opacity-90">
-                  Kecantikan Bebas Stres
-                </p>
-                <p className="text-sm opacity-75">
-                  Inner Peace = Outer Glow
-                </p>
-              </div>
-            </div>
           </div>
         </div>
+      </section>
+
+      {/* Skin Health Message */}
+      <section className="container mx-auto px-4 py-8">
+        <Card className="luxury-card p-6 text-center">
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-warm-gray">
+              Kesehatan Kulit tidak bisa dianggap remeh
+            </h3>
+            <p className="text-warm-gray-light leading-relaxed">
+              Faktanya kesehatan penampilan adalah sebuah privilege
+            </p>
+            <p className="text-warm-gray-light leading-relaxed">
+              Semua orang mendambakan kulit yang indah
+            </p>
+            <p className="text-warm-gray-light leading-relaxed">
+              Saat kulitmu cantik dan tampan semua terasa begitu baik padamu
+            </p>
+            <p className="text-warm-gray-light leading-relaxed">
+              Selain cantik harus juga sehat
+            </p>
+            <p className="text-lg font-semibold text-warm-gray mt-4">
+              Drelf solusinya
+            </p>
+          </div>
+        </Card>
       </section>
 
       {/* Beauty Philosophy */}
