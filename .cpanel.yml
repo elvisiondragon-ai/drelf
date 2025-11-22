@@ -3,8 +3,8 @@ deployment:
   tasks:
     - npm install
     - npm run build
-    - rm -rf /home1/elternit/public_html/drelf/*
-    - cp -R dist/. /home1/elternit/public_html/drelf/
-    - cp public/.htaccess /home1/elternit/public_html/drelf/
-    - find /home1/elternit/public_html/drelf/ -type d -exec chmod 755 {} \;
-    - find /home1/elternit/public_html/drelf/ -type f -exec chmod 644 {} \;
+    - rm -rf /home1/elternit/public_html/drelf/dist/dist/*
+    - cp -R dist/. /home1/elternit/public_html/drelf/dist/
+    - cp public/.htaccess /home1/elternit/public_html/drelf/dist/
+    - find /home1/elternit/public_html/drelf/dist/ -type d -exec chmod 755 {} \;
+    - find /home1/elternit/public_html/drelf/dist/ -type f -exec chmod 644 {} \;
