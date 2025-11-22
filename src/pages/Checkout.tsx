@@ -56,18 +56,8 @@ export default function Checkout() {
 
   const handleRedirectToElvisionPayment = () => {
     const baseUrl = "https://app.elvisiongroup.com/drelf"; // Redirect to the elvisiongroup payment page
-    const params = new URLSearchParams({
-      productId: selectedPackage.productId,
-      productName: selectedPackage.name,
-      price: selectedPackage.price.toString(),
-      // Remove all user info and payment method from query parameters
-      // paymentMethod: selectedPaymentMethod,
-      // userName: userName,
-      // userEmail: userEmail,
-      // phoneNumber: phoneNumber,
-    });
 
-    const redirectUrl = `${baseUrl}?${params.toString()}`;
+    const redirectUrl = baseUrl;
     console.log("Redirecting to Elvision payment page:", redirectUrl);
     window.location.href = redirectUrl;
   };
