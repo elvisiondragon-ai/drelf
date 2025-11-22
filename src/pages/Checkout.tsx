@@ -1,16 +1,20 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { QrCode, MessageCircle, Users, Calendar, Play, Gift } from "lucide-react";
-import { useState } from "react";
+import { Input } from "@/components/ui/input"; // Still needed for customer info if shown
+import { Label } from "@/components/ui/label"; // Still needed for customer info if shown
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Still needed for payment if shown
+import { MessageCircle, Users, Play, Gift } from "lucide-react";
 import { toast } from "sonner";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+
 import checkout1Image from "@/assets/checkout1.png";
 
 const selectedPackage = {
   name: "Drelf Collagen Ultimate",
+  productId: "drelf_collagen_ultimate", // A clean ID for the product
   subtitle: "Beauty Journey Complete Package",
   price: 600000,
   originalPrice: 750000,
@@ -18,7 +22,7 @@ const selectedPackage = {
   duration: "1 box supply",
   includes: [
     "Drelf Collagen 1 Box 10 Sachet",
-    "Exclusive Beauty Meditation Audio Guide (12 sessions)", 
+    "Exclusive Beauty Meditation Audio Guide (12 sessions)",
     "Personal Beauty Consultation (WhatsApp)",
     "Mindful Beauty Circle Community Access",
     "Beauty Timeline Tracker App",
@@ -28,7 +32,7 @@ const selectedPackage = {
 
 const meditationAudioAccess = [
   "Morning Glow Meditation (10 min)",
-  "Stress-Release Breathing (15 min)", 
+  "Stress-Release Breathing (15 min)",
   "Beauty Sleep Meditation (20 min)",
   "Confidence Affirmations (8 min)",
   "Heart Coherence Practice (12 min)",
@@ -36,7 +40,11 @@ const meditationAudioAccess = [
 ];
 
 export default function Checkout() {
-  const [selectedPayment, setSelectedPayment] = useState<string>("");
+  // Remove all state related to user info and payment method
+  // const [userName, setUserName] = useState("");
+  // const [userEmail, setUserEmail] = useState("");
+  // const [phoneNumber, setPhoneNumber] = useState("");
+  // const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(null);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -46,8 +54,27 @@ export default function Checkout() {
     }).format(price);
   };
 
+  const handleRedirectToElvisionPayment = () => {
+    const baseUrl = "https://app.elvisiongroup.com/drelf"; // Redirect to the elvisiongroup payment page
+    const params = new URLSearchParams({
+      productId: selectedPackage.productId,
+      productName: selectedPackage.name,
+      price: selectedPackage.price.toString(),
+      // Remove all user info and payment method from query parameters
+      // paymentMethod: selectedPaymentMethod,
+      // userName: userName,
+      // userEmail: userEmail,
+      // phoneNumber: phoneNumber,
+    });
+
+    const redirectUrl = `${baseUrl}?${params.toString()}`;
+    console.log("Redirecting to Elvision payment page:", redirectUrl);
+    window.location.href = redirectUrl;
+  };
+
   return (
     <div className="min-h-screen pb-32">
+      <Sonner />
       {/* Header */}
       <header className="hero-gradient py-6">
         <div className="container mx-auto px-4 text-center">
@@ -63,15 +90,14 @@ export default function Checkout() {
       {/* Package Summary */}
       <section className="container mx-auto px-4 py-6">
         <Card className="luxury-card p-6 mb-6">
-          {/* Product Image */}
           <div className="text-center mb-6">
-            <img 
-              src={checkout1Image} 
-              alt="Drelf Collagen Ultimate Product" 
+            <img
+              src={checkout1Image}
+              alt="Drelf Collagen Ultimate Product"
               className="w-full max-w-md mx-auto rounded-lg shadow-lg"
             />
           </div>
-          
+
           <div className="flex justify-between items-start mb-4">
             <div>
               <h2 className="text-lg font-bold text-warm-gray mb-1">{selectedPackage.name}</h2>
@@ -80,14 +106,7 @@ export default function Checkout() {
                 Save {selectedPackage.discount}%
               </Badge>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-warm-gray-light line-through">
-                {formatPrice(selectedPackage.originalPrice)}
-              </p>
-              <p className="text-xl font-bold text-rose-gold">
-                {formatPrice(selectedPackage.price)}
-              </p>
-            </div>
+            {/* Price is removed as per new instructions */}
           </div>
 
           <Separator className="my-4" />
@@ -116,111 +135,70 @@ export default function Checkout() {
               Exclusive content untuk transformasi holistik
             </p>
           </div>
-
-          <div className="bg-teal-light/20 rounded-lg p-4 mb-4">
-            <h4 className="font-semibold text-warm-gray mb-3 text-sm">Audio Library Includes:</h4>
-            <div className="grid grid-cols-1 gap-2">
-              {meditationAudioAccess.map((audio, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-teal-meditation"></div>
-                  <p className="text-sm text-warm-gray-light">{audio}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-pearl-cream rounded-lg p-4">
-            <div className="text-center">
-              <p className="font-medium text-warm-gray text-sm">Preview Sample:</p>
-              <p className="text-xs text-warm-gray-light">Inner Radiance Meditation - 2 min sample</p>
-            </div>
-          </div>
         </Card>
 
-        {/* Payment Options */}
-        <Card className="luxury-card p-6 mb-6">
-          <h3 className="font-semibold text-warm-gray mb-4">Pilihan Pembayaran</h3>
-          
-          <div className="space-y-3">
-            <div 
-              className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                selectedPayment === 'qris' ? 'border-rose-gold bg-rose-gold/10' : 'border-gray-200'
-              }`}
-              onClick={() => setSelectedPayment('qris')}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <QrCode size={24} className="text-warm-gray" />
-                  <div>
-                    <p className="font-medium text-warm-gray">QRIS</p>
-                    <p className="text-xs text-warm-gray-light">Scan & Pay - Instant</p>
-                  </div>
-                </div>
-                <Badge variant="outline" className="text-xs">Recommended</Badge>
-              </div>
-            </div>
-
-            <div 
-              className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                selectedPayment === 'transfer' ? 'border-rose-gold bg-rose-gold/10' : 'border-gray-200'
-              }`}
-              onClick={() => setSelectedPayment('transfer')}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 bg-warm-gray rounded flex items-center justify-center">
-                  <span className="text-xs text-white">B</span>
-                </div>
-                <div>
-                  <p className="font-medium text-warm-gray">Virtual Bank</p>
-                  <p className="text-xs text-warm-gray-light">BCA, Mandiri, BRI, BNI</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </Card>
-
-        {/* Customer Info */}
-        <Card className="luxury-card p-6 mb-6">
-          <h3 className="font-semibold text-warm-gray mb-4">Informasi Pengiriman</h3>
-          
+        {/* Removed Customer Info and Payment Options cards */}
+        {/* <Card className="luxury-card p-6 mb-6">
+          <h3 className="font-semibold text-warm-gray mb-4">Your Contact Information</h3>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="name" className="text-sm text-warm-gray">Nama Lengkap</Label>
-              <Input id="name" placeholder="Masukkan nama lengkap" className="mt-1" />
+              <Label htmlFor="userName" className="text-sm text-warm-gray">Nama Lengkap</Label>
+              <Input id="userName" placeholder="Masukkan nama lengkap" className="mt-1" value={userName} onChange={(e) => setUserName(e.target.value)} />
             </div>
-            
             <div>
-              <Label htmlFor="phone" className="text-sm text-warm-gray">WhatsApp</Label>
-              <Input id="phone" placeholder="08xxx untuk konsultasi beauty" className="mt-1" />
+              <Label htmlFor="userEmail" className="text-sm text-warm-gray">Email</Label>
+              <Input id="userEmail" type="email" placeholder="your@example.com" className="mt-1" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
             </div>
-            
             <div>
-              <Label htmlFor="address" className="text-sm text-warm-gray">Alamat Lengkap</Label>
-              <Input id="address" placeholder="Alamat pengiriman" className="mt-1" />
+              <Label htmlFor="phoneNumber" className="text-sm text-warm-gray">WhatsApp (Phone Number)</Label>
+              <Input id="phoneNumber" placeholder="08xxx untuk konsultasi beauty" className="mt-1" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
             </div>
           </div>
         </Card>
+
+        <Card className="luxury-card p-6 mb-6">
+          <h3 className="font-semibold text-warm-gray mb-4">Pilihan Pembayaran</h3>
+          <RadioGroup
+            onValueChange={setSelectedPaymentMethod}
+            value={selectedPaymentMethod || ""}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            {paymentMethods.map((method) => (
+              <div key={method.id}>
+                <RadioGroupItem value={method.method} id={method.id} className="sr-only" />
+                <Label
+                  htmlFor={method.id}
+                  className={`flex items-center justify-center rounded-lg border-2 p-4 cursor-pointer transition-all ${
+                    selectedPaymentMethod === method.method ? 'border-rose-gold bg-rose-gold/10' : 'border-gray-200'
+                  }`}
+                >
+                  <span className="font-medium text-warm-gray">{method.label}</span>
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </Card> */}
+
 
         {/* Support & Community */}
         <Card className="luxury-card p-6 mb-6">
           <h3 className="font-semibold text-warm-gray mb-4">Support & Community</h3>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-pearl-cream rounded-lg p-4 text-center">
               <MessageCircle size={24} className="mx-auto text-rose-gold mb-2" />
               <p className="font-medium text-warm-gray text-sm mb-1">Beauty Consultation</p>
               <p className="text-xs text-warm-gray-light">WhatsApp CS 24/7</p>
-              <Button 
-                variant="pearl" 
-                size="sm" 
+              <Button
+                variant="pearl"
+                size="sm"
                 className="mt-2 w-full"
                 onClick={() => window.open('https://wa.me/628980040002?text=Kak%20mau%20tanya%20Drelf', '_blank')}
               >
                 Chat Now
               </Button>
             </div>
-            
+
             <div className="bg-pearl-cream rounded-lg p-4 text-center">
               <Users size={24} className="mx-auto text-teal-meditation mb-2" />
               <p className="font-medium text-warm-gray text-sm mb-1">Mindful Beauty Circle</p>
@@ -239,7 +217,7 @@ export default function Checkout() {
             <h3 className="font-semibold text-warm-gray">Stress-Free Beauty Timeline</h3>
             <p className="text-sm text-warm-gray-light">Personalized routine builder</p>
           </div>
-          
+
           <div className="space-y-3">
             <div className="flex items-center gap-3 bg-pearl-cream rounded-lg p-3">
               <div className="w-8 h-8 bg-rose-gold rounded-full flex items-center justify-center text-xs text-white font-bold">1</div>
@@ -248,7 +226,7 @@ export default function Checkout() {
                 <p className="text-xs text-warm-gray-light">Daily collagen + morning meditation</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3 bg-pearl-cream rounded-lg p-3">
               <div className="w-8 h-8 bg-teal-meditation rounded-full flex items-center justify-center text-xs text-white font-bold">2</div>
               <div>
@@ -256,7 +234,7 @@ export default function Checkout() {
                 <p className="text-xs text-warm-gray-light">Visible glow + stress reduction</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3 bg-pearl-cream rounded-lg p-3">
               <div className="w-8 h-8 bg-blush rounded-full flex items-center justify-center text-xs text-white font-bold">3</div>
               <div>
@@ -269,33 +247,14 @@ export default function Checkout() {
 
         {/* Final CTA */}
         <div className="space-y-4">
-          <Button 
-            variant="hero" 
-            size="xl" 
+          <Button
+            variant="hero"
+            size="xl"
             className="w-full"
-            onClick={() => {
-              if (selectedPayment) {
-                // Handle payment logic here
-              } else {
-                toast.error('Stok habis silahkan check reseller kami di Marketplaces / Google !', {
-                  className: "text-lg font-bold bg-pink-500/20 border-pink-500/50 text-pink-900 backdrop-blur-sm",
-                  style: {
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    padding: '20px',
-                    minHeight: '80px',
-                    backgroundColor: 'rgba(236, 72, 153, 0.2)',
-                    backdropFilter: 'blur(8px)',
-                    color: '#831843',
-                    border: '2px solid rgba(236, 72, 153, 0.5)',
-                  }
-                });
-              }
-            }}
+            onClick={handleRedirectToElvisionPayment}
           >
             Bayar Sekarang
           </Button>
-          
           <p className="text-center text-xs text-warm-gray-light">
             Secure checkout • 30-day money back guarantee • Free shipping
           </p>
