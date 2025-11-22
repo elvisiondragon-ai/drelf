@@ -104,7 +104,7 @@ export default function Meditate() {
                 controls 
                 className="w-full h-full object-cover"
               >
-                <source src="https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/rus.mp4" type="video/mp4" />
+                <source src="https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/rus.mp4" type="video/mp4" poster="/src/assets/rus.jpg" />
                 Your browser does not support the video tag.
               </video>
             </div>
