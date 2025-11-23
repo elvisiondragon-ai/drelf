@@ -57,6 +57,16 @@ export default function Checkout() {
   const handleRedirectToElvisionPayment = () => {
     const baseUrl = "https://app.elvisiongroup.com/drelf"; // Redirect to the elvisiongroup payment page
 
+    // Meta Pixel AddToCart event
+    if (window.fbq) {
+      window.fbq('track', 'AddToCart', {
+        content_ids: [selectedPackage.productId],
+        content_type: 'product',
+        value: selectedPackage.price,
+        currency: 'IDR'
+      });
+    }
+
     const redirectUrl = baseUrl;
     console.log("Redirecting to Elvision payment page:", redirectUrl);
     window.location.href = redirectUrl;

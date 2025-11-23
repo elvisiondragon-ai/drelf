@@ -10,6 +10,7 @@ import Meditate from "./pages/Meditate";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import { MobileNavigation } from "@/components/MobileNavigation";
+import Pixel from "./pages/Pixel";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <Pixel /> 
         <div className="relative">
           <Routes>
             <Route path="/" element={<Home />} />
