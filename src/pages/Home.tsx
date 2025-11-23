@@ -20,7 +20,7 @@ export default function Home() {
             />
             <h1 className="text-3xl font-bold text-warm-gray mb-2">DRELF.ID</h1>
             <div className="space-y-2">
-              <p className="text-xl font-bold text-warm-gray">Claimable</p>
+              <p className="text-xl font-bold text-warm-gray">Ultimate Collagen</p>
               <p className="text-lg font-semibold text-warm-gray">Pertama di Dunia</p>
               <p className="text-lg text-warm-gray-light">Minuman Kolagen Holistik</p>
               <p className="text-sm text-warm-gray-light">Garansi Kepuasan</p>

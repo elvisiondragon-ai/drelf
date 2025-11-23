@@ -9,9 +9,9 @@ import produk3Image from "@/assets/produk3.png";
 
 const products = [
   {
-    name: "Drelf Collagen Radiance",
-    subtitle: "Untuk Stres Ringan",
-    price: "Rp 589.000",
+    name: "Drelf Collagen ",
+    subtitle: "Untuk Kecantikan Luar Dalam",
+    price: "Rp 600.000",
     purity: 98,
     potency: "5,000mg",
     timeline: "2-4 minggu",
