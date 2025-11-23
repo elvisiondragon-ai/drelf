@@ -22,11 +22,9 @@ const selectedPackage = {
   duration: "1 box supply",
   includes: [
     "Drelf Collagen 1 Box 10 Sachet",
-    "Exclusive Beauty Meditation Audio Guide (12 sessions)",
+    "Exclusive Beauty Meditation Audio",
     "Personal Beauty Consultation (WhatsApp)",
-    "Mindful Beauty Circle Community Access",
-    "Beauty Timeline Tracker App",
-    "Garansi Kepuasan"
+    "Buklet Kecantikan VIP"
   ]
 };
 
@@ -120,6 +118,21 @@ export default function Checkout() {
               </div>
             ))}
           </div>
+
+        {/* Final CTA - Moved */}
+        <div className="space-y-4 mt-6">
+          <Button
+            variant="hero"
+            size="xl"
+            className="w-full"
+            onClick={handleRedirectToElvisionPayment}
+          >
+            Bayar Sekarang
+          </Button>
+          <p className="text-center text-xs text-warm-gray-light">
+            Secure checkout • 30-day money back guarantee • Free shipping
+          </p>
+        </div>
         </Card>
 
         {/* Mindful Beauty Audio Access */}
@@ -245,20 +258,6 @@ export default function Checkout() {
           </div>
         </Card>
 
-        {/* Final CTA */}
-        <div className="space-y-4">
-          <Button
-            variant="hero"
-            size="xl"
-            className="w-full"
-            onClick={handleRedirectToElvisionPayment}
-          >
-            Bayar Sekarang
-          </Button>
-          <p className="text-center text-xs text-warm-gray-light">
-            Secure checkout • 30-day money back guarantee • Free shipping
-          </p>
-        </div>
       </section>
     </div>
   );

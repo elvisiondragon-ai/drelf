@@ -11,6 +11,7 @@ import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import { MobileNavigation } from "@/components/MobileNavigation";
 import Pixel from "./pages/Pixel";
+import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <MobileNavigation />
+          <FloatingWhatsAppButton />
         </div>
       </BrowserRouter>
     </TooltipProvider>

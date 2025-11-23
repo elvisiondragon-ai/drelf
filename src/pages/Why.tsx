@@ -49,6 +49,7 @@ const testimonials = [
     name: "Dr. Maya Sari",
     role: "Dermatologist",
     specialty: "Anti-Aging Expert",
+    rating: 5,
     quote: "Pendekatan holistik DRELF sangat revolusioner. Mind-body-skin connection yang mereka ajarkan adalah future of beauty.",
     certification: "Certified"
   },
@@ -319,7 +320,7 @@ export default function Why() {
                   {testimonial.rating && (
                     <div className="flex items-center gap-1">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} size={14} className="fill-rose-gold text-rose-gold" />
+                        <Star key={i} size={14} className="fill-yellow-500 text-yellow-500" />
                       ))}
                     </div>
                   )}
