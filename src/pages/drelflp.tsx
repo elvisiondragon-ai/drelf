@@ -913,7 +913,7 @@ export default function DrelfLanding() {
               </div>
 
               <button 
-                onClick={() => window.location.href = 'https://app.elvisiongroup.com/drelf'}
+                onClick={() => window.location.href = 'https://ai.elvisiongroup.com/drelf'}
                 className="w-full py-5 bg-gradient-to-r from-amber-500 via-amber-600 to-rose-500 text-white rounded-full font-bold text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mb-4"
               >
                 {t.checkout.cta} <ChevronRight size={24} />
@@ -974,7 +974,7 @@ export default function DrelfLanding() {
             </p>
 
             <button 
-              onClick={() => window.location.href = 'https://app.elvisiongroup.com/drelf'}
+              onClick={() => window.location.href = 'https://ai.elvisiongroup.com/drelf'}
               className="px-12 py-5 bg-gradient-to-r from-amber-500 via-amber-600 to-rose-500 text-white rounded-full font-bold text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
             >
               {t.final.cta}
@@ -1055,6 +1055,6 @@ export default function DrelfLanding() {
  * - /rus.jpg (poster image for video)
  *
  * External Links/URLs:
- * - https://app.elvisiongroup.com/drelf
+ * - https://ai.elvisiongroup.com/drelf
  * - https://wa.me/628980040002?text=Kak%20mau%20tanya%20Drelf
  */
