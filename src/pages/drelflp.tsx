@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { ChevronRight, Play, Star, Shield, Heart, Sparkles, Clock, Award, MessageCircle, Languages } from "lucide-react";
+import { ChevronRight, Play, Star, Shield, Heart, Sparkles, Clock, Award, MessageCircle, Languages, Globe, Smile } from "lucide-react";
 
 const translations = {
-  id: {
+  id_initial: {
     hero: {
       badge: "✨ Pertama di Indonesia",
       title1: "Rahasia yang Mereka",
@@ -216,9 +216,9 @@ const translations = {
       badge: "🎁 Limited Offer",
       title: "Start Transformation Today",
       subtitle: "1 Box = 10 Premium Collagen Sachets + Exclusive Meditation Audio Access",
-      price_was: "Rp 750.000",
+      price_was: "",
       price_now: "Rp 600.000",
-      save: "Save Rp 150.000",
+      save: "Buy 3 Get 50% Off - This Month Promo",
       features: [
         "10 Premium Collagen Sachets 5000mg",
         "6 Exclusive Meditation Audios",
@@ -276,34 +276,29 @@ const translations = {
       }
     },
     pain: {
-      title: "Merasa Familiar?",
-      subtitle: "Ini yang terjadi pada ribuan wanita Indonesia setiap hari...",
+      title: "The Invisible Leak",
+      subtitle: "Banyak yang tidak sadar, tapi mulai usia 25 tahun, tubuh kita kehilangan 1.5% kolagen setiap tahunnya. Itu bukan sekadar angka, itu adalah \"kebocoran\" kecantikan yang terjadi saat Anda tidur, bekerja, dan tertawa.",
       items: [
         {
-          title: "Habis Jutaan untuk Skincare",
-          desc: "Sudah pakai serum mahal, cream import, treatment spa... tapi kulit masih kusam dan lelah. Kenapa?",
-          icon: "💸"
-        },
-        {
-          title: "Kantung Mata & Wajah Lelah",
-          desc: "Tidur sudah cukup, tapi bangun tetap terlihat capek. Mata bengkak, wajah kusam. Foto selfie harus edit dulu.",
+          title: "Pagi yang Melelahkan",
+          desc: "Pernah bangun tidur tapi wajah tetap terlihat seperti kurang tidur 3 hari? Itu adalah hilangnya elastisitas. Kulit Anda tidak lagi \"membal\" kembali setelah menempel di bantal.",
           icon: "😫"
         },
         {
-          title: "Stress Membunuh Kecantikan",
-          desc: "Tekanan kerja, rumah tangga, sosial media... kortisol naik, kolagen turun 40%. Kulit jadi korban.",
-          icon: "😰"
+          title: "Make-up yang Berkhianat",
+          desc: "Fondasi semahal apapun akan terlihat cakey dan masuk ke garis halus jika kulit di bawahnya sudah kehilangan kepadatan.",
+          icon: "💄"
         },
         {
-          title: "Percaya Diri Menurun",
-          desc: "Lihat cermin jadi insecure. Foto teman-teman glowing, kamu kok beda? Padahal umur sama...",
-          icon: "😔"
+          title: "Kehilangan \"Spark\"",
+          desc: "Anda melihat foto 2 tahun lalu dan menyadari ada sesuatu yang hilang. Bukan cuma kerutan, tapi volume dan glow yang membuat Anda terlihat \"hidup\".",
+          icon: "✨"
         }
       ],
       realProblem: {
-        title: "Tahukah Kamu Masalah Sebenarnya?",
-        p1: "70% kecantikan sejati bukan dari produk yang kamu oles di kulit...",
-        p2: "Tapi dari KETENANGAN PIKIRAN yang tidak pernah ada dalam bottle mahal itu."
+        title: "Faktanya",
+        p1: "Menunda satu hari berarti membiarkan \"lubang\" di jaringan kulit Anda semakin lebar.",
+        p2: "Kerutan yang hari ini halus, besok akan menetap permanen."
       }
     },
     products: {
@@ -367,19 +362,24 @@ const translations = {
       transformTitle: "Transformasi Nyata Pelanggan Kami"
     },
     solution: {
-      title: "Kenapa DRELF Berbeda dari",
-      title_accent: "Semua Kolagen di Pasaran?",
-      subtitle: "Inilah revolusi kecantikan holistik yang mengubah segalanya",
+      title: "The Method",
+      title_accent: "Mengapa Drelf Collagen Adalah Jawaban Pasti",
+      subtitle: "Kita tidak bicara tentang minuman manis biasa. Drelf Collagen bekerja dengan metode Deep-Cell Infusion.",
       items: [
         {
-          title: "Kolagen Premium 5000mg",
-          desc: "Marine collagen murni dari deep sea fish, bioavailability 98%, langsung diserap tubuh.",
-          benefits: ["Kulit lebih kencang & elastis", "Mengurangi kerutan 40%", "Glow alami dari dalam"]
+          title: "Nano-Peptide Technology",
+          desc: "Kolagen biasa molekulnya terlalu besar. Drelf menggunakan Tri-Peptide berukuran nano yang langsung \"berenang\" masuk ke aliran darah dan mengisi kekosongan jaringan kulit dalam hitungan menit.",
+          benefits: ["Tri-Peptide Nano", "Langsung Serap", "Isi Kekosongan"]
         },
         {
-          title: "Audio Meditasi Eksklusif",
-          desc: "Panduan meditasi khusus untuk menurunkan kortisol, meningkatkan produksi kolagen alami.",
-          benefits: ["Stress turun 60%", "Tidur berkualitas", "Produksi kolagen naik 35%"]
+          title: "The Synergistic Formula",
+          desc: "Tidak hanya kolagen, kami menggabungkannya dengan L-Glutathione dan Vitamin C dosis tepat. Drelf memastikan setiap gram yang Anda minum menjadi nutrisi kulit.",
+          benefits: ["L-Glutathione", "Vitamin C", "Nutrisi Maksimal"]
+        },
+        {
+          title: "Zero Fishy Aftertaste",
+          desc: "Berdasarkan riset pengguna yang benci bau amis, Drelf diformulasikan dengan rasa segar yang membuat ritual kecantikan Anda menjadi momen yang paling dinanti setiap hari.",
+          benefits: ["Rasa Segar", "Tidak Amis", "Enak Diminum"]
         }
       ],
       stats: [
@@ -389,16 +389,20 @@ const translations = {
       ]
     },
     difference: {
-      title: "Rasakan Perbedaan DRELF",
-      subtitle: "Kecantikan sejati datang dari keseimbangan pikiran dan tubuh.",
+      title: "Transformasi yang Anda Miliki Kembali",
+      subtitle: "Bayangkan kembali ke masa di mana Anda tidak butuh filter atau concealer tebal hanya untuk pergi ke minimarket.",
       items: [
         {
-          title: "Ketenangan Batin",
-          desc: "Drelf membantu menenangkan pikiran Anda."
+          title: "The \"Bounce Back\" Effect",
+          desc: "Kulit yang terasa kenyal saat disentuh, seolah-olah ada pegas baru di bawah permukaan."
         },
         {
-          title: "Pancaran Alami",
-          desc: "Kecantikan yang memancar dari dalam."
+          title: "Natural Radiance",
+          desc: "Wajah yang terlihat \"segar\" meskipun baru bangun tidur. Bukan karena minyak, tapi karena kelembapan yang terkunci."
+        },
+        {
+          title: "Confidence Tanpa Topeng",
+          desc: "Kembalinya rasa percaya diri saat bertemu orang tanpa harus khawatir garis senyum Anda menjadi pusat perhatian."
         }
       ]
     },
@@ -429,9 +433,9 @@ const translations = {
       badge: "🎁 Penawaran Terbatas",
       title: "Mulai Transformasi Hari Ini",
       subtitle: "1 Box = 10 Sachet Premium Collagen + Akses Audio Meditasi Eksklusif",
-      price_was: "Rp 750.000",
+      price_was: "",
       price_now: "Rp 600.000",
-      save: "Hemat Rp 150.000",
+      save: "Beli 3 Diskon 50% Promo Bulan ini",
       features: [
         "10 Sachet Kolagen Premium 5000mg",
         "6 Audio Meditasi Eksklusif",
@@ -439,7 +443,7 @@ const translations = {
         "Konsultasi Beauty via WhatsApp",
         "Buklet Panduan Kecantikan VIP"
       ],
-      cta: "Pesan Sekarang",
+      cta: "Kirim Ke Negara Saya",
       guarantees: [
         "✓ Pembayaran Aman & Terpercaya",
         "✓ Garansi Uang Kembali 30 Hari",
@@ -492,8 +496,12 @@ export default function DrelfLanding() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-rose-50">
-      {/* Language Switcher */}
-      <div className="fixed top-6 right-6 z-50">
+      {/* Language Switcher & Export Badge */}
+      <div className="fixed top-6 right-6 z-50 flex flex-col items-end gap-2">
+        <div className="bg-black/90 backdrop-blur-md border border-amber-500/30 px-3 py-1.5 rounded-full shadow-xl flex items-center gap-2 text-amber-400 text-xs font-bold tracking-wide transform hover:scale-105 transition-all duration-300">
+          <Globe size={14} className="animate-pulse" />
+          {lang === "id" ? "EKSPOR KE MANCANEGARA" : "WORLDWIDE EXPORT QUALITY"}
+        </div>
         <button
           onClick={toggleLang}
           className="bg-white/80 backdrop-blur-md border border-amber-200 px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-amber-900 font-semibold"
@@ -764,11 +772,11 @@ export default function DrelfLanding() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
               {t.solution.items.map((item, i) => (
-                <div key={i} className={`bg-gradient-to-br from-${i === 0 ? 'rose' : 'amber'}-50 to-white p-8 rounded-2xl border-2 border-${i === 0 ? 'rose' : 'amber'}-100`}>
-                  <div className={`w-16 h-16 bg-gradient-to-br from-${i === 0 ? 'rose' : 'amber'}-400 to-${i === 0 ? 'rose' : 'amber'}-600 rounded-2xl flex items-center justify-center mb-6`}>
-                    {i === 0 ? <Heart className="text-white" size={32} /> : <Sparkles className="text-white" size={32} />}
+                <div key={i} className={`bg-gradient-to-br from-${i % 2 === 0 ? 'rose' : 'amber'}-50 to-white p-8 rounded-2xl border-2 border-${i % 2 === 0 ? 'rose' : 'amber'}-100`}>
+                  <div className={`w-16 h-16 bg-gradient-to-br from-${i % 2 === 0 ? 'rose' : 'amber'}-400 to-${i % 2 === 0 ? 'rose' : 'amber'}-600 rounded-2xl flex items-center justify-center mb-6`}>
+                    {i === 0 ? <Heart className="text-white" size={32} /> : i === 1 ? <Sparkles className="text-white" size={32} /> : <Smile className="text-white" size={32} />}
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">
                     {item.title}
@@ -779,7 +787,7 @@ export default function DrelfLanding() {
                   <ul className="space-y-2">
                     {item.benefits.map((benefit, j) => (
                       <li key={j} className="flex items-center gap-2 text-gray-700">
-                        <div className={`w-2 h-2 bg-${i === 0 ? 'rose' : 'amber'}-500 rounded-full`}></div>
+                        <div className={`w-2 h-2 bg-${i % 2 === 0 ? 'rose' : 'amber'}-500 rounded-full`}></div>
                         {benefit}
                       </li>
                     ))}
@@ -817,9 +825,9 @@ export default function DrelfLanding() {
             <p className="text-xl text-gray-600 mb-12">
               {t.difference.subtitle}
             </p>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               {t.difference.items.map((item, i) => (
-                <div key={i} className={`bg-white p-6 rounded-2xl shadow-lg border-2 border-${i === 0 ? 'amber' : 'rose'}-100`}>
+                <div key={i} className={`bg-white p-6 rounded-2xl shadow-lg border-2 border-${i % 2 === 0 ? 'amber' : 'rose'}-100`}>
                   <img src={`https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/drelf${i+4}.png`} alt={item.title} className="w-full h-auto rounded-lg mb-4"/>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                   <p className="text-gray-700">{item.desc}</p>
@@ -889,13 +897,17 @@ export default function DrelfLanding() {
               <div className="text-center mb-8">
                 <img src={"https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/checkout1.png"} alt="Drelf Checkout Product" className="mx-auto max-w-xs mb-8 rounded-lg shadow-lg"/>
                 <div className="inline-block">
-                  <div className="text-gray-500 line-through text-xl mb-2">{t.checkout.price_was}</div>
+                  {t.checkout.price_was && (
+                    <div className="text-gray-500 line-through text-xl mb-2">{t.checkout.price_was}</div>
+                  )}
                   <div className="text-5xl font-bold bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent mb-2">
                     {t.checkout.price_now}
                   </div>
-                  <div className="inline-block px-4 py-1 bg-rose-500 text-white rounded-full text-sm font-semibold">
-                    {t.checkout.save}
-                  </div>
+                  {t.checkout.save && (
+                    <div className="inline-block px-4 py-1 bg-rose-500 text-white rounded-full text-sm font-semibold">
+                      {t.checkout.save}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -918,6 +930,15 @@ export default function DrelfLanding() {
               >
                 {t.checkout.cta} <ChevronRight size={24} />
               </button>
+
+              {lang === "id" && (
+                <button 
+                  onClick={() => window.location.href = 'https://app.elvisiongroup.com/drelf'}
+                  className="w-full py-5 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-full font-bold text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mb-4"
+                >
+                  Khusus Pengiriman Indonesia Disini <ChevronRight size={24} />
+                </button>
+              )}
 
               <div className="text-center space-y-2 text-sm text-gray-600">
                 {t.checkout.guarantees.map((g, i) => (
@@ -972,13 +993,6 @@ export default function DrelfLanding() {
               {t.final.investment} 
               <span className="block font-bold text-amber-600 mt-2">{t.final.investment_bold}</span>
             </p>
-
-            <button 
-              onClick={() => window.location.href = 'https://export.elvisiongroup.com/drelf'}
-              className="px-12 py-5 bg-gradient-to-r from-amber-500 via-amber-600 to-rose-500 text-white rounded-full font-bold text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              {t.final.cta}
-            </button>
           </div>
         </div>
       </section>
