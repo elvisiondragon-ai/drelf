@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRight, Play, Star, Shield, Heart, Sparkles, Clock, Award, MessageCircle, Languages, Globe, Smile } from "lucide-react";
 
 const translations = {
@@ -220,12 +220,12 @@ const translations = {
       price_now: "Rp 600.000",
       save: "Buy 3 Get 50% Off - This Month Promo",
       features: [
-        "10 Premium Collagen Sachets 5000mg",
-        "6 Exclusive Meditation Audios",
-        "FREE Shipping Across Indonesia",
-        "Beauty Consultation via WhatsApp",
-        "VIP Beauty Guide Booklet"
+        "10 Drelf Premium Collagen Sachets (Consume max 1x daily for optimal results)",
+        "Exclusive Beauty Booklet Guidance (Complete daily beauty ritual guide)",
+        "Beauty Hypnosis Audio Ritual (Digital Access sent when items arrive)"
       ],
+      techTitle: "High Technology Synchronization",
+      techDesc: "Drinking Drelf while listening to short hypnosis audio will help the body enter a deep relaxation phase. In this condition, collagen nutrients are perfectly absorbed into all body cells faster and more effectively.",
       cta: "Order Now",
       guarantees: [
         "✓ Safe & Trusted Payment",
@@ -437,12 +437,12 @@ const translations = {
       price_now: "Rp 600.000",
       save: "Beli 3 Diskon 50% Promo Bulan ini",
       features: [
-        "10 Sachet Kolagen Premium 5000mg",
-        "6 Audio Meditasi Eksklusif",
-        "FREE Ongkir Se-Indonesia",
-        "Konsultasi Beauty via WhatsApp",
-        "Buklet Panduan Kecantikan VIP"
+        "10 Sachet Drelf Premium Collagen (Konsumsi max 1x sehari untuk hasil optimal)",
+        "Exclusive Beauty Booklet Guidance (Panduan lengkap ritual kecantikan harian)",
+        "Beauty Hypnosis Audio Ritual (Digital Access yang dikirimkan saat barang sampai)"
       ],
+      techTitle: "High Technology Synchronization",
+      techDesc: "Minum Drelf sambil mendengarkan audio hypnosis pendek akan membantu tubuh masuk ke fase deep relaxation. Dalam kondisi ini, nutrisi kolagen terserap sempurna ke seluruh sel tubuh secara lebih cepat dan efektif.",
       cta: "Kirim Ke Negara Saya",
       guarantees: [
         "✓ Pembayaran Aman & Terpercaya",
@@ -483,6 +483,14 @@ const translations = {
 export default function DrelfLanding() {
   const [activeTab, setActiveTab] = useState("home");
   const [lang, setLang] = useState<"id" | "en">("id");
+
+  useEffect(() => {
+    const path = window.location.pathname;
+    const search = window.location.search;
+    if (path.includes("/en") || search.includes("en")) {
+      setLang("en");
+    }
+  }, []);
 
   const t = translations[lang];
 
@@ -912,9 +920,10 @@ export default function DrelfLanding() {
               </div>
 
               <div className="space-y-4 mb-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{lang === "id" ? "Apa yang Anda Dapatkan:" : "What You Get:"}</h3>
                 {t.checkout.features.map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3 text-gray-700">
-                    <div className="w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div key={i} className="flex items-start gap-3 text-gray-700">
+                    <div className="w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <svg className="w-4 h-4 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M5 13l4 4L19 7"></path>
                       </svg>
@@ -922,6 +931,16 @@ export default function DrelfLanding() {
                     <span>{feature}</span>
                   </div>
                 ))}
+              </div>
+
+              <div className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-amber-200 mb-8">
+                <h4 className="font-bold text-amber-800 mb-2 flex items-center gap-2">
+                  <Sparkles size={18} className="text-amber-500" />
+                  {t.checkout.techTitle}
+                </h4>
+                <p className="text-gray-700 text-sm italic leading-relaxed">
+                  "{t.checkout.techDesc}"
+                </p>
               </div>
 
               <button 
@@ -933,7 +952,7 @@ export default function DrelfLanding() {
 
               {lang === "id" && (
                 <button 
-                  onClick={() => window.location.href = 'https://app.elvisiongroup.com/drelf'}
+                  onClick={() => window.location.href = 'https://export.elvisiongroup.com/id_drelf'}
                   className="w-full py-5 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-full font-bold text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mb-4"
                 >
                   Khusus Pengiriman Indonesia Disini <ChevronRight size={24} />
@@ -1070,5 +1089,6 @@ export default function DrelfLanding() {
  *
  * External Links/URLs:
  * - https://export.elvisiongroup.com/drelf
+ * - https://export.elvisiongroup.com/id_drelf
  * - https://wa.me/628980040002?text=Kak%20mau%20tanya%20Drelf
  */
