@@ -692,7 +692,7 @@ export default function DrelfLanding() {
           <div className="aspect-[9/16] w-full rounded-lg overflow-hidden shadow-xl">
             {lang === "en" ? (
               <iframe
-                src="https://www.youtube.com/embed/te_POkmBZb8"
+                src="https://www.youtube.com/embed/M3APLsqYxFk"
                 className="w-full h-full rounded-lg"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -700,7 +700,7 @@ export default function DrelfLanding() {
               />
             ) : (
               <iframe
-                src="https://www.youtube.com/embed/5LNhenWdRd4"
+                src="https://www.youtube.com/embed/X7xyvWSzIe4"
                 className="w-full h-full rounded-lg"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
