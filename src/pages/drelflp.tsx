@@ -1,6 +1,27 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, Play, Star, Shield, Heart, Sparkles, Clock, Award, MessageCircle, Languages, Globe, Smile } from "lucide-react";
 
+// Import local assets
+import produk1 from "@/assets/produk1.png";
+import produk2 from "@/assets/produk2.png";
+import produk3 from "@/assets/produk3.png";
+import why1 from "@/assets/why1.png";
+import why2 from "@/assets/why2.png";
+import why3 from "@/assets/why3.png";
+import testi1 from "@/assets/1.jpeg";
+import testi2 from "@/assets/2.jpeg";
+import testi3 from "@/assets/3.jpeg";
+import testi4 from "@/assets/4.jpeg";
+import testi5 from "@/assets/5.jpeg";
+import drelf4 from "@/assets/drelf4.png";
+import drelf5 from "@/assets/drelf5.png";
+import checkout1 from "@/assets/checkout1.png";
+
+const productsImages = [produk1, produk2, produk3];
+const whyImages = [why1, why2, why3];
+const testiImages = [testi1, testi2, testi3, testi4, testi5];
+const drelfImages = [null, null, null, null, drelf4, drelf5]; // mapping for drelf{i+4}
+
 const translations = {
   id_initial: {
     hero: {
@@ -742,7 +763,7 @@ export default function DrelfLanding() {
             <div className="grid md:grid-cols-3 gap-8">
               {t.products.items.map((item, i) => (
                 <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-amber-100 p-6">
-                  <img src={`https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/produk${i+1}.png`} alt={`Drelf Product ${i+1}`} className="w-full h-auto rounded-lg mb-4"/>
+                  <img src={productsImages[i]} alt={`Drelf Product ${i+1}`} className="w-full h-auto rounded-lg mb-4"/>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                   <p className="text-gray-700">{item.desc}</p>
                 </div>
@@ -765,7 +786,7 @@ export default function DrelfLanding() {
             <div className="grid md:grid-cols-3 gap-8">
               {t.why.items.map((item, i) => (
                 <div key={i} className="bg-gradient-to-br from-amber-50 to-rose-50 p-8 rounded-2xl border-2 border-amber-100 shadow-lg">
-                  <img src={`https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/why${i+1}.png`} alt={`Why Drelf ${i+1}`} className="w-full h-48 object-cover rounded-lg mb-4"/>
+                  <img src={whyImages[i]} alt={`Why Drelf ${i+1}`} className="w-full h-48 object-cover rounded-lg mb-4"/>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                   <p className="text-gray-700">{item.desc}</p>
                 </div>
@@ -929,8 +950,8 @@ export default function DrelfLanding() {
                   {t.testimonial.transformTitle}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <img key={i} src={`https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/${i}.jpeg`} alt={`Testimony ${i}`} className="w-full h-auto rounded-lg shadow-md object-cover"/>
+                  {testiImages.map((img, i) => (
+                    <img key={i} src={img} alt={`Testimony ${i+1}`} className="w-full h-auto rounded-lg shadow-md object-cover"/>
                   ))}
                 </div>
               </div>
@@ -1011,7 +1032,7 @@ export default function DrelfLanding() {
             <div className="grid md:grid-cols-3 gap-8">
               {t.difference.items.map((item, i) => (
                 <div key={i} className={`bg-white p-6 rounded-2xl shadow-lg border-2 border-${i % 2 === 0 ? 'amber' : 'rose'}-100`}>
-                  <img src={`https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/drelf${i+4}.png`} alt={item.title} className="w-full h-auto rounded-lg mb-4"/>
+                  <img src={i === 0 ? drelf4 : drelf5} alt={item.title} className="w-full h-auto rounded-lg mb-4"/>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                   <p className="text-gray-700">{item.desc}</p>
                 </div>
@@ -1078,7 +1099,7 @@ export default function DrelfLanding() {
 
             <div className="bg-gradient-to-br from-amber-50 to-rose-50 rounded-3xl p-8 border-2 border-amber-200 shadow-2xl">
               <div className="text-center mb-8">
-                <img src={"https://nlrgdhpmsittuwiiindq.supabase.co/storage/v1/object/public/drelf/checkout1.png"} alt="Drelf Checkout Product" className="mx-auto max-w-xs mb-8 rounded-lg shadow-lg"/>
+                <img src={checkout1} alt="Drelf Checkout Product" className="mx-auto max-w-xs mb-8 rounded-lg shadow-lg"/>
                 <div className="inline-block">
                   {t.checkout.price_was && (
                     <div className="text-gray-500 line-through text-xl mb-2">{t.checkout.price_was}</div>
