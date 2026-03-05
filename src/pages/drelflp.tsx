@@ -239,7 +239,7 @@ const translations = {
       subtitle: "1 Box = 10 Premium Collagen Sachets + Exclusive Meditation Audio Access",
       price_was: "",
       price_now: "Rp 600.000",
-      save: "Buy 3 Get 50% Off - This Month Promo",
+      save: "",
       features: [
         "10 Drelf Premium Collagen Sachets (Consume max 1x daily for optimal results)",
         "Exclusive Beauty Booklet Guidance (Complete daily beauty ritual guide)",
@@ -499,7 +499,7 @@ const translations = {
       subtitle: "1 Box = 10 Sachet Premium Collagen + Akses Audio Meditasi Eksklusif",
       price_was: "",
       price_now: "Rp 600.000",
-      save: "Beli 3 Diskon 50% Promo Bulan ini",
+      save: "",
       features: [
         "10 Sachet Drelf Premium Collagen (Konsumsi max 1x sehari untuk hasil optimal)",
         "Exclusive Beauty Booklet Guidance (Panduan lengkap ritual kecantikan harian)",
