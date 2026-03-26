@@ -9,6 +9,7 @@ import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton";
 // Route-based Code Splitting and Lazy Loading
 const DrelfLanding = lazy(() => import("./pages/drelflp"));
 const Pixel = lazy(() => import("./pages/Pixel"));
+const Pay = lazy(() => import("./pages/pay"));
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,14 @@ const App = () => (
               element={
                 <Suspense fallback={<div className="min-h-screen bg-amber-50 animate-pulse" />}>
                   <DrelfLanding />
+                </Suspense>
+              } 
+            /> 
+            <Route 
+              path="/pay" 
+              element={
+                <Suspense fallback={<div className="min-h-screen bg-rose-50 animate-pulse" />}>
+                  <Pay />
                 </Suspense>
               } 
             /> 

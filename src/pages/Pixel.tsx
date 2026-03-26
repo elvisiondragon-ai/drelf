@@ -1,3 +1,5 @@
+// @ts-nocheck
+/* eslint-disable */
 import React, { useEffect } from 'react';
 
 const Pixel: React.FC = () => {

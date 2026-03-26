@@ -1,19 +1,31 @@
-const APP_VERSION = '2026.03.05.01'; // <-- Change this number to force an update
+export const APP_VERSION = '1.0.8';
 
-if (typeof window !== 'undefined' && localStorage.getItem('v_cache') !== APP_VERSION) {
-  // 1. Clear all Service Workers
-  navigator.serviceWorker?.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+const CACHE_KEY = 'v_cache_drelf';
 
-  // 2. Clear all Browser Caches
-  caches.keys().then(names => names.forEach(n => caches.delete(n)));
-
-  // 3. Update version and Hard Reload
-  localStorage.setItem('v_cache', APP_VERSION);
-  window.location.reload();
+if (localStorage.getItem(CACHE_KEY) !== APP_VERSION) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+  }
+  if ('caches' in window) {
+    caches.keys().then(names => names.forEach(n => caches.delete(n)));
+  }
+  localStorage.setItem(CACHE_KEY, APP_VERSION);
+  setTimeout(() => window.location.reload(), 500);
 }
+
+// @ts-expect-error - Adding to window for global access
+window.APP_VERSION = APP_VERSION;
 
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(error => {
+      console.error('Service Worker registration failed:', error);
+    });
+  });
+}
 
 createRoot(document.getElementById("root")!).render(<App />);
