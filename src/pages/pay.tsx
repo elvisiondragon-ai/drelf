@@ -1,9 +1,10 @@
 // @ts-nocheck
 /* eslint-disable */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { supabase } from '@/supabase';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -11,10 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandInput as CommandInputBase, CommandItem, CommandList } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, Copy, CreditCard, User, Plus, Minus, MapPin, Check, ChevronsUpDown, ShoppingCart } from 'lucide-react';
-import { FaWhatsapp } from 'react-icons/fa';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/supabase';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster as Sonner, toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import { getFbcFbpCookies, getClientIp } from '@/utils';
 
@@ -169,7 +167,7 @@ export default function DrelfPaymentPage() {
   const [searchParams] = useSearchParams();
   const affiliateRef = searchParams.get('id');
   const ctwaId = searchParams.get('ctwa_id');
-  const { toast } = useToast();
+  const purchaseFiredRef = useRef(false);
   
   const PIXEL_ID = '1749197952320359';
   const brandName = 'DRELF Collagen';
@@ -193,6 +191,7 @@ export default function DrelfPaymentPage() {
   const [loading, setLoading] = useState(false);
   const [paymentData, setPaymentData] = useState<any>(null);
   const [showPaymentInstructions, setShowPaymentInstructions] = useState(false);
+  const [retailOpen, setRetailOpen] = useState(false);
 
   const selectedProduct = products.find(p => p.id === selectedProductId) || products[0];
   const totalAmount = selectedProduct.price * quantity;
@@ -229,12 +228,62 @@ export default function DrelfPaymentPage() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!paymentData?.tripay_reference) return;
+
+    const channel = supabase
+        .channel(`payment-status-drelf-${paymentData.tripay_reference}`)
+        .on(
+            'postgres_changes',
+            {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'orders',
+                filter: `tripay_reference=eq.${paymentData.tripay_reference}`
+            },
+            (payload) => {
+                if (payload.new?.status === 'PAID') {
+                    if (purchaseFiredRef.current) return;
+                    purchaseFiredRef.current = true;
+                    
+                    // Auto-register as verified buyer in drelf_reviews
+                    supabase.from('drelf_reviews').insert([{ 
+                        user_name: userName, 
+                        user_email: userEmail, 
+                        is_verified: true,
+                        isi_review: null, 
+                        rating: null
+                    }]).then(({ error }) => {
+                        if (error) console.error('Review pre-registration error:', error);
+                    });
+
+                    toast.success("🎉 Pembayaran Berhasil!", { 
+                        description: "Terima kasih! Pembayaran Anda telah kami terima. Pesanan Anda akan segera kami proses.", 
+                        duration: 10000 
+                    });
+                    
+                    sendCapiEvent('Purchase', {
+                        content_name: selectedProduct.name,
+                        value: totalAmount,
+                        currency: 'IDR',
+                        payment_method: selectedPaymentMethod
+                    });
+                }
+            }
+        )
+        .subscribe();
+
+    return () => {
+        supabase.removeChannel(channel);
+    };
+  }, [paymentData?.tripay_reference]);
+
   const formatCurrency = (amount: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
-  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast({ title: "Berhasil Disalin" }); };
+  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast.success("Berhasil Disalin"); };
 
   const handleCreatePayment = async () => {
-    if (!userName || !phoneNumber || !userAddress || !selectedProvince || !kota || !kecamatan || !kodePos) {
-      toast({ title: "Data Tidak Lengkap", description: "Mohon isi semua data pengiriman", variant: "destructive" });
+    if (!userName || !phoneNumber || !userAddress || !selectedProvince || !kota || !kecamatan || !kodePos || !userEmail) {
+      toast.error("Data Tidak Lengkap", { description: "Mohon isi semua data pengiriman & Email" });
       return;
     }
     setLoading(true);
@@ -258,6 +307,13 @@ export default function DrelfPaymentPage() {
         }
       });
       if (data?.success) { 
+        if (data.message === "Transaction already processed.") {
+          toast.success("🎉 Pembayaran Sudah Terverifikasi!", {
+            description: "Pesanan Anda sedang dalam proses pengiriman.",
+            duration: 5000
+          });
+          return;
+        }
         setPaymentData(data); 
         const redirectMethods = ['DANA', 'OVO', 'SHOPEEPAY', 'LINKAJA', 'SAKUKU'];
         if (data.checkoutUrl && redirectMethods.includes(selectedPaymentMethod)) {
@@ -270,107 +326,96 @@ export default function DrelfPaymentPage() {
         setPaymentData({ paymentMethod: selectedPaymentMethod, amount: totalAmount, status: 'UNPAID', tripay_reference: `DR-${Date.now()}` }); 
         setShowPaymentInstructions(true); 
       }
-      else { toast({ title: "Error", description: data?.error || error?.message || "Gagal", variant: "destructive" }); }
+      else { toast.error(data?.error || error?.message || "Gagal memproses pembayaran"); }
     } catch (error) { console.error(error); } finally { setLoading(false); }
   };
 
   const paymentMethods = [
-    { code: 'BCA_MANUAL', name: 'Transfer BCA Manual', description: 'Konfirmasi via WhatsApp' },
-    { code: 'QRIS', name: 'QRIS / E-Wallet', description: 'Otomatis' },
+    { code: 'QRIS', name: 'QRIS', description: 'Otomatis' },
     { code: 'BCAVA', name: 'BCA Virtual Account', description: 'Otomatis' },
+    { code: 'BNIVA', name: 'BNI Virtual Account', description: 'Otomatis' },
+    { code: 'BRIVA', name: 'BRI Virtual Account', description: 'Otomatis' },
+    { code: 'MANDIRIVA', name: 'Mandiri Virtual Account', description: 'Otomatis' },
+    { code: 'PERMATAVA', name: 'Permata Virtual Account', description: 'Otomatis' },
+    { code: 'SMSVA', name: 'Sinarmas Virtual Account', description: 'Otomatis' },
+    { code: 'MYBVA', name: 'Maybank Virtual Account', description: 'Otomatis' },
+    { code: 'OVO', name: 'OVO', description: 'Otomatis' },
     { code: 'SHOPEEPAY', name: 'ShopeePay', description: 'Otomatis' },
-    { code: 'COD', name: 'Bayar di Tempat (COD)', description: 'Bayar saat barang sampai' },
+    { code: 'BCA_MANUAL', name: 'Transfer BCA Manual', description: '1-5 Menit Verifikasi' },
+    { code: 'COD', name: 'Bayar di Tempat (COD)', description: 'Bayar saat sampai' },
   ];
 
   if (showPaymentInstructions && paymentData) {
     return (
-      <div className="min-h-screen bg-slate-50 p-5 flex flex-col items-center">
-        <Toaster />
-        <div className="w-full max-w-lg space-y-8">
-          <Button variant="ghost" onClick={() => setShowPaymentInstructions(false)} className="w-fit p-0 hover:bg-transparent font-semibold text-slate-500 text-[13px]">
-            <ArrowLeft className="w-6 h-6 mr-2" /> Kembali
-          </Button>
-          
-          <div className="text-center space-y-3">
-            <h1 className="text-base font-semibold text-slate-900 tracking-normal">Menunggu Pembayaran</h1>
-            <p className="text-slate-600 text-[13px] font-medium">Selesaikan pembayaran untuk memproses pesanan Anda.</p>
-          </div>
-
-          <Card className="border border-slate-200 shadow-xl shadow-slate-200/50 rounded-3xl">
-            <CardContent className="pt-8 space-y-6 px-8 pb-10">
-              <div className="flex justify-between items-center text-[13px]">
-                <span className="text-slate-500 font-semibold uppercase tracking-wider text-[13px]">Reference ID</span>
-                <span className="font-sans font-semibold text-rose-600 text-[13px]">{paymentData.tripay_reference}</span>
-              </div>
-              <Separator className="bg-slate-100" />
-              <div className="flex justify-between items-center">
-                <span className="text-slate-500 font-semibold uppercase tracking-wider text-[13px]">Total Tagihan</span>
-                <span className="text-base font-semibold text-slate-900">{formatCurrency(paymentData.amount)}</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {paymentData.paymentMethod === 'BCA_MANUAL' && (
-            <Card className="border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden rounded-3xl">
-              <div className="bg-rose-600 p-6 text-white flex justify-between items-center">
-                <span className="font-semibold text-base uppercase tracking-normal">BCA TRANSFER MANUAL</span>
-                <div className="bg-white/20 px-4 py-1.5 rounded-full text-[12px] font-semibold uppercase tracking-normal">KONFIRMASI WA</div>
-              </div>
-              <CardContent className="space-y-8 pt-10 text-center px-8 pb-12">
-                <div className="space-y-3">
-                  <p className="text-[13px] font-semibold text-slate-400 uppercase tracking-normal">Nomor Rekening</p>
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="text-base font-sans font-semibold text-slate-900 tracking-normal">775 114 6578</span>
-                    <Button variant="ghost" size="icon" onClick={() => copyToClipboard('7751146578')} className="h-14 w-14 text-rose-600 bg-slate-50 rounded-2xl"><Copy className="w-7 h-7" /></Button>
-                  </div>
-                  <p className="text-[13px] font-semibold text-slate-700">an Delia Mutia</p>
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyCenter: 'center', zIndex: 9999, padding: '20px' }}>
+        <div style={{ backgroundColor: 'white', borderRadius: '24px', width: '100%', maxWidth: '500px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+            <div style={{ padding: '32px', textAlign: 'center', borderBottom: '1px solid #f1f5f9' }}>
+                <div style={{ width: '64px', height: '64px', backgroundColor: '#f0fdf4', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#16a34a' }}>
+                    <Check size={32} />
                 </div>
-                <Button className="w-full bg-[#25D366] hover:bg-[#128C7E] h-20 text-base font-semibold rounded-3xl shadow-xl shadow-green-100" onClick={() => window.open(`https://wa.me/62895325633487?text=${encodeURIComponent(`Halo saya sudah transfer BCA.\nRef: ${paymentData.tripay_reference}\nTotal: ${paymentData.amount}`)}`)}>
-                  <FaWhatsapp className="mr-3 w-8 h-8" /> Konfirmasi WhatsApp
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+                <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>Tagihan Berhasil Dibuat</h2>
+                <p style={{ fontSize: '14px', color: '#64748b', fontWeight: 500 }}>Selesaikan pembayaran Anda sekarang</p>
+            </div>
 
-          {paymentData.paymentMethod === 'COD' && (
-            <Card className="border border-slate-200 shadow-xl shadow-slate-200/50 p-12 text-center space-y-8 rounded-[40px]">
-              <div className="w-28 h-24 bg-green-50 rounded-full flex items-center justify-center text-green-600 mx-auto border border-green-100">
-                <Check className="w-16 h-16" />
-              </div>
-              <h3 className="text-base font-semibold text-slate-900">Pesanan COD Berhasil!</h3>
-              <p className="text-[13px] text-slate-600 leading-relaxed font-medium">Tim kami akan menghubungi Anda via WhatsApp untuk konfirmasi pengiriman. Bayar saat barang sampai.</p>
-              <Button className="w-full bg-[#25D366] hover:bg-[#128C7E] h-20 font-semibold text-base rounded-3xl" onClick={() => window.open(`https://wa.me/62895325633487?text=${encodeURIComponent(`Halo Kak, saya sudah order ${brandName} COD.\nRef: ${paymentData.tripay_reference}`)}`)}>
-                Chat Admin Sekarang
-              </Button>
-            </Card>
-          )}
+            <div style={{ padding: '32px', backgroundColor: '#f8fafc' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Metode</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}>{paymentData.paymentMethod}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Ref ID</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#334155', fontFamily: 'monospace' }}>{paymentData.tripay_reference}</span>
+                </div>
+                <div style={{ height: '1px', backgroundColor: '#e2e8f0', margin: '16px 0' }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Total</span>
+                    <span style={{ fontSize: '24px', fontWeight: 900, color: '#e11d48' }}>{formatCurrency(paymentData.amount)}</span>
+                </div>
+            </div>
 
-          {(paymentData.payCode || paymentData.qrUrl) && (
-            <Card className="border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden rounded-[40px]">
-               <div className="bg-slate-900 p-6 text-white flex justify-between items-center">
-                <span className="font-semibold text-base uppercase tracking-normal">{paymentData.paymentMethod}</span>
-                <span className="text-[12px] font-semibold opacity-60 uppercase tracking-normal">OTOMATIS</span>
-              </div>
-              <CardContent className="pt-10 space-y-10 text-center px-8 pb-14">
+            <div style={{ padding: '32px' }}>
                 {paymentData.payCode && (
-                  <div className="space-y-4">
-                    <p className="text-[13px] font-semibold text-slate-400 uppercase tracking-normal">KODE BAYAR / VA</p>
-                    <div className="flex items-center justify-center gap-5">
-                      <span className="text-2xl font-sans font-semibold text-rose-600 tracking-wider">{paymentData.payCode}</span>
-                      <Button variant="ghost" size="icon" onClick={() => copyToClipboard(paymentData.payCode)} className="h-16 w-16 bg-slate-50 rounded-2xl"><Copy className="w-8 h-8" /></Button>
-                    </div>
-                  </div>
+                   <div style={{ marginBottom: '24px', textAlign: 'center' }}>
+                      <p style={{ fontSize: '12px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '12px' }}>Kode Bayar / VA</p>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+                         <span style={{ fontSize: '28px', fontWeight: 900, color: '#0f172a', letterSpacing: '1px' }}>{paymentData.payCode}</span>
+                         <button onClick={() => copyToClipboard(paymentData.payCode)} style={{ padding: '8px', backgroundColor: '#f1f5f9', border: 'none', borderRadius: '12px', cursor: 'pointer', color: '#64748b' }}>
+                            <Copy size={20} />
+                         </button>
+                      </div>
+                   </div>
                 )}
+
                 {paymentData.qrUrl && (
-                  <div className="flex flex-col items-center gap-8">
-                    <div className="p-8 bg-white rounded-[50px] border-4 border-slate-50 shadow-2xl">
-                      <img src={paymentData.qrUrl} alt="QR" className="w-72 h-72" />
+                    <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                        <div style={{ display: 'inline-block', padding: '16px', backgroundColor: 'white', border: '2px solid #f1f5f9', borderRadius: '24px' }}>
+                            <img src={paymentData.qrUrl} alt="QR Code" style={{ width: '200px', height: '200px' }} />
+                        </div>
+                        <p style={{ marginTop: '12px', fontSize: '12px', color: '#94a3b8', fontWeight: 600 }}>Scan QR di atas dengan aplikasi pembayaran Anda</p>
                     </div>
-                  </div>
                 )}
-              </CardContent>
-            </Card>
-          )}
+
+                {paymentData.paymentMethod === 'BCA_MANUAL' && (
+                    <div style={{ marginBottom: '24px', textAlign: 'center' }}>
+                        <p style={{ fontSize: '12px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '12px' }}>Rekening BCA</p>
+                        <p style={{ fontSize: '24px', fontWeight: 900, color: '#0f172a' }}>775 114 6578</p>
+                        <p style={{ fontSize: '14px', fontWeight: 600, color: '#64748b' }}>an Delia Mutia</p>
+                        <button 
+                            onClick={() => window.open(`https://wa.me/62895325633487?text=${encodeURIComponent(`Halo saya sudah transfer BCA.\nRef: ${paymentData.tripay_reference}\nTotal: ${paymentData.amount}`)}`)}
+                            style={{ width: '100%', marginTop: '20px', padding: '16px', backgroundColor: '#25D366', color: 'white', border: 'none', borderRadius: '16px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                        >
+                            Konfirmasi via WhatsApp
+                        </button>
+                    </div>
+                )}
+
+                <button 
+                    onClick={() => setShowPaymentInstructions(false)}
+                    style={{ width: '100%', padding: '16px', backgroundColor: 'transparent', border: 'none', color: '#94a3b8', fontWeight: 700, cursor: 'pointer' }}
+                >
+                    Tutup
+                </button>
+            </div>
         </div>
       </div>
     );
@@ -440,6 +485,10 @@ export default function DrelfPaymentPage() {
               <Input placeholder="Isi nama anda" value={userName} onChange={e => setUserName(e.target.value)} className="h-16 bg-slate-50 border-slate-200 rounded-2xl text-[13px] font-semibold shadow-inner px-6" />
             </div>
             <div className="space-y-2.5">
+              <Label className="text-[13px] font-semibold uppercase tracking-wider text-slate-600 ml-1">Email Aktif</Label>
+              <Input type="email" placeholder="email@anda.com" value={userEmail} onChange={e => setUserEmail(e.target.value)} className="h-16 bg-slate-50 border-slate-200 rounded-2xl text-[13px] font-semibold shadow-inner px-6" />
+            </div>
+            <div className="space-y-2.5">
               <Label className="text-[13px] font-semibold uppercase tracking-wider text-slate-600 ml-1">Nomor WhatsApp</Label>
               <Input type="tel" placeholder="0812..." value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="h-16 bg-slate-50 border-slate-200 rounded-2xl text-[13px] font-semibold shadow-inner px-6" />
             </div>
@@ -452,23 +501,40 @@ export default function DrelfPaymentPage() {
              <SectionTitle icon={CreditCard}>Metode Pembayaran</SectionTitle>
           </CardHeader>
           <CardContent className="pt-8 px-8 pb-10">
-            <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="grid grid-cols-1 gap-4">
-              {paymentMethods.map((method) => (
-                <Label 
-                  key={method.code} 
-                  htmlFor={method.code} 
-                  className={`flex items-center justify-between p-6 rounded-3xl border-2 cursor-pointer transition-all active:scale-[0.98] shadow-sm ${selectedPaymentMethod === method.code ? 'bg-rose-50/50 border-rose-500 shadow-rose-100 shadow-xl scale-[1.02]' : 'bg-white border-slate-100'}`}
-                >
-                  <div className="flex items-center gap-5">
-                    <div>
-                      <p className={`text-[13px] font-semibold ${selectedPaymentMethod === method.code ? 'text-rose-900' : 'text-slate-700'}`}>{method.name}</p>
-                      <p className="text-[13px] text-slate-400 font-semibold uppercase tracking-normal mt-0.5">{method.description}</p>
+            <div style={{ padding: '4px 0 16px', color: '#e11d48', fontSize: '13px', fontWeight: 700, lineHeight: '1.5' }}>
+                QRIS, Virtual, Ovo 3 detik, manual 5 menit setelah pembayaran langsung konfirmasi, dikirim di hari yang sama
+            </div>
+            <div className="payment-pmgrid">
+                {paymentMethods.slice(0, 9).map((method) => (
+                    <div key={method.code} className={`payment-pmopt ${selectedPaymentMethod === method.code ? "sel" : ""}`} onClick={() => { setSelectedPaymentMethod(method.code); setRetailOpen(false); }}>
+                        <div className="payment-pmname">{method.name}</div>
                     </div>
-                  </div>
-                  <RadioGroupItem value={method.code} id={method.code} className="hidden" />
-                </Label>
-              ))}
-            </RadioGroup>
+                ))}
+                
+                <div className={`payment-pmopt ${['INDOMARET', 'ALFAMART', 'ALFAMIDI'].includes(selectedPaymentMethod) ? "sel" : ""}`} onClick={() => setRetailOpen(!retailOpen)}>
+                    <div className="payment-pmname">Retail / Indomart ▾</div>
+                    <div className="payment-pmsub">Indomaret, Alfamart, Alfamidi</div>
+                </div>
+            </div>
+
+            {retailOpen && (
+                <div className="payment-pmgrid" style={{ marginTop: '10px', padding: '12px', background: 'rgba(225,29,72,0.05)', borderRadius: '12px', border: '1px solid rgba(225,29,72,0.1)' }}>
+                    {[{code: 'INDOMARET', name: 'Indomaret'}, {code: 'ALFAMART', name: 'Alfamart'}, {code: 'ALFAMIDI', name: 'Alfamidi'}].map((method) => (
+                        <div key={method.code} className={`payment-pmopt ${selectedPaymentMethod === method.code ? "sel" : ""}`} onClick={() => setSelectedPaymentMethod(method.code)}>
+                            <div className="payment-pmname">{method.name}</div>
+                        </div>
+                    ))}
+                </div>
+            )}
+            
+            <div className="payment-pmgrid" style={{ marginTop: '10px' }}>
+                 <div className={`payment-pmopt ${selectedPaymentMethod === 'BCA_MANUAL' ? "sel" : ""}`} onClick={() => { setSelectedPaymentMethod('BCA_MANUAL'); setRetailOpen(false); }}>
+                    <div className="payment-pmname">Transfer BCA Manual</div>
+                </div>
+                 <div className={`payment-pmopt ${selectedPaymentMethod === 'COD' ? "sel" : ""}`} onClick={() => { setSelectedPaymentMethod('COD'); setRetailOpen(false); }}>
+                    <div className="payment-pmname">Bayar di Tempat (COD)</div>
+                </div>
+            </div>
             <Button className="w-full bg-rose-600 hover:bg-rose-700 h-20 text-base font-semibold rounded-3xl mt-10 shadow-xl" onClick={handleCreatePayment} disabled={loading}>
               {loading ? "Memproses..." : "Bayar Sekarang"}
             </Button>

@@ -162,4 +162,43 @@
   .rose-gradient {
     background: var(--gradient-rose);
   }
+
+  .payment-pmgrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .payment-pmgrid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .payment-pmgrid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .payment-pmopt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem; /* rounded-lg */
+    border: 1px solid hsl(var(--rose-gold-light)); /* border border-rose-gold-light */
+    background-color: hsl(var(--pearl-white)); /* bg-pearl-white */
+    padding: 1rem; /* p-4 */
+    text-align: center;
+    box-shadow: var(--shadow-soft); /* shadow-soft */
+    transition: all 0.3s ease-in-out; /* transition-all duration-300 ease-in-out */
+    cursor: pointer;
+  }
+
+  .payment-pmopt:hover {
+    transform: scale(1.05); /* hover:scale-105 */
+    border-color: hsl(var(--rose-gold)); /* hover:border-rose-gold */
+    box-shadow: var(--shadow-luxury); /* hover:shadow-luxury */
+  }
 }
