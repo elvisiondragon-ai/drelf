@@ -764,16 +764,16 @@ const ChevronsUpDown = ({ className }: { className?: string }) => (
 );
 
 const MOCK_REVIEWS = [
-  { user_name: "Riska Putri", rating: 5, isi_review: "Udah coba macam-macam kolagen, tapi cuma Drelf yang bikin glowingnya beda. Meditasi audionya juga ngebantu banget biar gak gampang stress.", created_at: "2026-03-24T08:30:00Z", is_verified: true },
-  { user_name: "Alya Safira", rating: 5, isi_review: "Kulit jadi lebih kenyal dan cerah dalam 2 minggu. Ritual dengerin audio sambil minum kolagen beneran bikin relax. Recommended!", created_at: "2026-03-22T10:15:00Z", is_verified: true },
-  { user_name: "Indah Permata", rating: 5, isi_review: "Suka banget sama konsep holistiknya. Gak cuma cantik di luar tapi tenang di dalem. Bangun tidur muka keliatan seger terus.", created_at: "2026-03-20T16:40:00Z", is_verified: true },
-  { user_name: "Sari Wahyuni", rating: 4, isi_review: "Rasa kolagennya enak, gak amis sama sekali. Praktis dibawa kemana-mana. Progres di kulit mulai kelihatan merata.", created_at: "2026-03-18T09:12:00Z", is_verified: true },
-  { user_name: "Nabila Az-Zahra", rating: 5, isi_review: "The game changer! Audio hypnosalnya ngefek banget buat nurunin kecemasan, dan kulit jadi auto-glowing. Fix bakal langganan.", created_at: "2026-03-15T11:50:00Z", is_verified: true },
-  { user_name: "Putri Rahayu", rating: 5, isi_review: "Kemasan eksklusif, dapet booklet panduan juga. Berasa banget dirawat secara premium. Hasilnya nyata, pori-pori mengecil.", created_at: "2026-03-12T14:20:00Z", is_verified: true },
-  { user_name: "Dina Maulina", rating: 4, isi_review: "Baru pake 1 box udah banyak yang nanya pake skincare apa. Padahal cuma nambahin Drelf di ritual pagi.", created_at: "2026-03-09T17:05:00Z", is_verified: true },
-  { user_name: "Fitri Handayani", rating: 5, isi_review: "Paling suka diminum pas lagi butuh me-time. Kombinasi nutrisi dan audionya jenius banget. Kulit sehat, jiwa tenang.", created_at: "2026-03-06T19:33:00Z", is_verified: true },
-  { user_name: "Hani Fatimah", rating: 5, isi_review: "Beli paket isi 3 buat stok. Emang paling worth it dibanding brand sebelah. Kualitas bahannya premium kerasa di badan.", created_at: "2026-03-03T12:22:00Z", is_verified: true },
-  { user_name: "Larasati", rating: 5, isi_review: "Terima kasih Drelf, jerawat hormonal jadi lebih terkontrol dan bekasnya cepet pudar. Solusi holistik terbaik!", created_at: "2026-02-28T08:11:00Z", is_verified: true }
+  { user_name: "Reza", user_email: "reza.ma***@gmail.com", rating: 5, isi_review: "Rasa berry-nya enak banget, udah konsumsi 2 minggu kulit kerasa lebih lembab.", country: "ID", created_at: "2024-03-10", is_verified: true },
+  { user_name: "Maya", user_email: "maya.pu***@yahoo.com", rating: 5, isi_review: "Collagen terbaik, nggak bikin amis seperti brand lain.", country: "ID", created_at: "2024-03-12", is_verified: true },
+  { user_name: "Sarah", user_email: "sarah.ad***@gmail.com", rating: 4, isi_review: "Packing aman, pengiriman ke Jakarta cuma 1 hari.", country: "ID", created_at: "2024-03-15", is_verified: true },
+  { user_name: "Dina", user_email: "dina.se***@hotmail.com", rating: 5, isi_review: "Cerahnya alami, kerutan halus di sekitar mata mulai memudar.", country: "ID", created_at: "2024-03-18", is_verified: true },
+  { user_name: "Fitri", user_email: "fitri.an***@gmail.com", rating: 5, isi_review: "Awalnya skeptis, tapi setelah sebulan beneran ada perubahan di tekstur kulit.", country: "ID", created_at: "2024-03-20", is_verified: true },
+  { user_name: "Andi", user_email: "andi.sa***@gmail.com", rating: 4, isi_review: "Bagus buat recovery sehabis olahraga juga.", country: "ID", created_at: "2024-03-22", is_verified: true },
+  { user_name: "Rina", user_email: "rina.wa***@icloud.com", rating: 5, isi_review: "Udah repurchase ketiga kali, worth it banget.", country: "ID", created_at: "2024-03-24", is_verified: true },
+  { user_name: "Lia", user_email: "lia.am***@gmail.com", rating: 5, isi_review: "Suka banget sama after taste-nya yang fresh.", country: "ID", created_at: "2024-03-25", is_verified: true },
+  { user_name: "Kevin", user_email: "kevin.gu***@gmail.com", rating: 5, isi_review: "Belikan buat istri, dia suka banget kulitnya jadi glowing.", country: "ID", created_at: "2024-03-26", is_verified: true },
+  { user_name: "Tika", user_email: "tika.re***@gmail.com", rating: 5, isi_review: "Admin ramah, dijelasin detail cara konsumsinya.", country: "ID", created_at: "2024-03-27", is_verified: true },
 ];
 
 export default function DrelfLanding() {
@@ -820,7 +820,7 @@ export default function DrelfLanding() {
   };
 
   const loadReviews = async () => {
-    const { data } = await supabase.from('drelf_reviews').select('*').order('created_at', { ascending: false });
+    const { data } = await supabase.from('reviews_drelf').select('*').order('created_at', { ascending: false });
     const combined = data ? [...data, ...MOCK_REVIEWS] : MOCK_REVIEWS;
     combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     setReviews(combined);
@@ -830,12 +830,25 @@ export default function DrelfLanding() {
     if (!reviewForm.content || !reviewForm.email) return toast.error("Isi email and ulasan ya");
     setIsSubmittingReview(true);
     try {
-      const { error } = await supabase.from('drelf_reviews').insert({
+      // Check if buyer exists in payments to mark as verified
+      const { data: payments } = await supabase
+        .from('payments')
+        .select('status')
+        .eq('email', reviewForm.email)
+        .eq('status', 'PAID');
+      
+      const isVerified = (payments && payments.length > 0);
+
+      const { error } = await supabase.from('reviews_drelf').upsert({
         user_name: reviewForm.name || 'Customer',
         user_email: reviewForm.email,
         isi_review: reviewForm.content,
-        rating: reviewForm.rating
-      });
+        rating: reviewForm.rating,
+        is_verified: isVerified,
+        lang: lang,
+        country: 'ID'
+      }, { onConflict: 'user_email' });
+
       if (error) throw error;
       toast.success("Review berhasil dikirim!");
       setReviewForm({ name: '', email: '', rating: 5, content: '' });
@@ -917,11 +930,18 @@ export default function DrelfLanding() {
   const formatCurrency = (val: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
 
   const paymentMethods = [
-    { code: 'BCA_MANUAL', name: 'Transfer BCA Manual', description: 'Konfirmasi via WhatsApp' },
-    { code: 'QRIS', name: 'QRIS / E-Wallet', description: 'Otomatis' },
-    { code: 'BCAVA', name: 'BCA Virtual Account', description: 'Otomatis' },
+    { code: 'QRIS', name: 'QRIS', description: 'Otomatis' },
+    { code: 'DANA', name: 'DANA', description: 'Otomatis' },
+    { code: 'OVO', name: 'OVO', description: 'Otomatis' },
     { code: 'SHOPEEPAY', name: 'ShopeePay', description: 'Otomatis' },
-    { code: 'COD', name: 'Bayar di Tempat (COD)', description: 'Bayar saat barang sampai' },
+    { code: 'BCA_MANUAL', name: 'Transfer BCA Manual', description: 'Konfirmasi via WhatsApp' },
+    { code: 'BCAVA', name: 'BCA Virtual Account', description: 'Otomatis' },
+    { code: 'BNIVA', name: 'BNI Virtual Account', description: 'Otomatis' },
+    { code: 'BRIVA', name: 'BRI Virtual Account', description: 'Otomatis' },
+    { code: 'MANDIRIVA', name: 'Mandiri Virtual Account', description: 'Otomatis' },
+    { code: 'INDOMARET', name: 'Indomaret', description: 'Gerai Indomaret' },
+    { code: 'ALFAMART', name: 'Alfamart', description: 'Gerai Alfamart' },
+    { code: 'ALFAMIDI', name: 'Alfamidi', description: 'Gerai Alfamidi' },
   ];
 
   if (showPaymentInstructions && paymentData) {
@@ -1700,7 +1720,19 @@ export default function DrelfLanding() {
                       {review.user_name?.charAt(0) || 'C'}
                     </div>
                     <div>
-                      <h4 className="font-black text-slate-900 text-[14px]">{review.user_name}</h4>
+                      <h4 className="font-black text-slate-900 text-[14px]">
+                        {(() => {
+                           if (review.user_email) {
+                             const parts = review.user_email.split('@');
+                             if (parts.length === 2) {
+                               const namePart = parts[0];
+                               const showLen = Math.max(3, Math.floor(namePart.length / 2));
+                               return `${namePart.slice(0, showLen)}***@${parts[1]}`;
+                             }
+                           }
+                           return review.user_name;
+                        })()}
+                      </h4>
                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                     </div>
                   </div>

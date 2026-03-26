@@ -1,4 +1,4 @@
-export const APP_VERSION = '1.0.9';
+export const APP_VERSION = '1.0.10';
 
 const CACHE_KEY = 'v_cache_drelf';
 
