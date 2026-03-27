@@ -1872,7 +1872,7 @@ export default function DrelfLanding() {
         </DialogContent>
       </Dialog>
 
-      <Sonner position="top-center" expand={true} richColors />
+      <Toaster position="top-center" expand={true} richColors />
     </div>
   );
 }
