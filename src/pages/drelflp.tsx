@@ -1805,10 +1805,9 @@ export default function DrelfLanding() {
         </div>
       </footer>
 
-      {/* Review Modal */}
       <Dialog open={showReviewModal} onOpenChange={setShowReviewModal}>
-        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-[3rem] border-none shadow-2xl">
-          <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-10 text-white">
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-[3rem] border-none shadow-2xl max-h-[95vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-8 text-white relative">
             <h2 className="text-3xl font-black leading-tight italic">Bagikan Pengalaman<span className="block text-amber-200">Cantik Anda</span></h2>
           </div>
           <div className="p-10 space-y-8 bg-white">
