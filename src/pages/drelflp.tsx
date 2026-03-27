@@ -909,14 +909,13 @@ export default function DrelfLanding() {
        }
        return;
     }
-    setLoading(true);
-    const fullAddress = `${userAddress}, ${kecamatan}, ${kota}, ${selectedProvince}, ${kodePos}`;
-    const { fbc, fbp } = getFbcFbpCookies();
-    const clientIp = await getClientIp();
+    const uniqueCode = selectedPaymentMethod === 'BCA_MANUAL' ? Math.floor(Math.random() * 900) + 100 : 0;
+    const finalAmount = totalAmount + uniqueCode;
+    const merchantRef = selectedPaymentMethod === 'BCA_MANUAL' ? `MANUAL-${Date.now()}` : undefined;
 
     await sendCapiEvent('AddPaymentInfo', {
       content_name: brandName,
-      value: totalAmount,
+      value: finalAmount,
       currency: 'IDR',
       payment_method: selectedPaymentMethod
     });
@@ -927,12 +926,13 @@ export default function DrelfLanding() {
           subscriptionType: 'drelf', paymentMethod: selectedPaymentMethod, userName, 
           userEmail: `${phoneNumber}@drelf.id`, phoneNumber,
           address: fullAddress, province: selectedProvince, kota, kecamatan, kodePos, 
-          amount: totalAmount, quantity: quantity,
+          amount: finalAmount, quantity: quantity,
+          merchantRef,
           productName: `${brandName} (x${quantity})`, fbc, fbp, clientIp
         }
       });
       if (data?.success) { 
-        setPaymentData(data); 
+        setPaymentData({ ...data, amount: finalAmount }); 
         if (data.checkoutUrl && ['DANA', 'OVO', 'SHOPEEPAY'].includes(selectedPaymentMethod)) {
             window.location.href = data.checkoutUrl;
             return;
