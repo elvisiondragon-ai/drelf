@@ -23,7 +23,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Toaster as Sonner, toast } from 'sonner';
+import { Toaster, toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/supabase';
 import { getFbcFbpCookies, getClientIp } from '@/utils';
@@ -763,6 +763,7 @@ const ChevronsUpDown = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
 );
 
+
 const MOCK_REVIEWS = [
   { user_name: "Reza", user_email: "reza.ma***@gmail.com", rating: 5, isi_review: "Rasa berry-nya enak banget, udah konsumsi 2 minggu kulit kerasa lebih lembab.", country: "ID", created_at: "2024-03-10", is_verified: true },
   { user_name: "Maya", user_email: "maya.pu***@yahoo.com", rating: 5, isi_review: "Collagen terbaik, nggak bikin amis seperti brand lain.", country: "ID", created_at: "2024-03-12", is_verified: true },
@@ -801,6 +802,20 @@ export default function DrelfLanding() {
   const formRef = useRef<HTMLDivElement>(null);
   const PIXEL_ID = '1749197952320359';
   const brandName = 'DRELF Collagen';
+
+  useEffect(() => {
+    const sub = supabase.channel('orders_realtime_drelf')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload) => {
+        if (payload.new.status === 'PAID') {
+          toast.success('PENTING! PEMBAYARAN ANDA BERHASIL DIKONFIRMASI ✅', {
+            description: 'Pesanan sedang diproses. Mohon tunggu tim kami menghubungi anda.',
+            duration: 10000,
+          });
+        }
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(sub); };
+  }, []);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -1054,112 +1069,104 @@ export default function DrelfLanding() {
             </div>
           </div>
 
-          {/* 12-Field Payment Form */}
-          <div ref={formRef} className="lg:w-[500px] w-full bg-white/95 backdrop-blur-xl rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.2)] overflow-hidden border border-white/40 animate-in fade-in slide-in-from-right-10 duration-1000 ring-1 ring-black/5">
-             <div className="p-8 sm:p-12 space-y-10">
-                <SectionTitle icon={ShoppingCart}>Data Pesanan & Pengiriman</SectionTitle>
-                
-                <div className="space-y-8">
-                   <div className="flex gap-6 items-center bg-slate-50/80 p-6 rounded-[2rem] border border-slate-100 shadow-inner group transition-all hover:bg-white hover:shadow-xl hover:-translate-y-1">
-                      <div className="w-20 h-20 bg-white rounded-2xl border border-slate-200 p-3 flex items-center justify-center shrink-0 shadow-sm group-hover:rotate-6 transition-transform">
-                         <span className="text-4xl">✨</span>
-                      </div>
-                      <div className="space-y-1">
-                         <h4 className="font-black text-slate-900 text-[16px] tracking-tight">{brandName}</h4>
-                         <p className="text-[12px] text-slate-500 font-bold uppercase tracking-widest tabular-nums">{formatCurrency(300000)} / BOX</p>
-                      </div>
-                   </div>
-
-                   <div className="flex justify-between items-center bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm group">
-                      <Label className="text-[12px] font-black uppercase text-slate-400 tracking-widest ml-1">JUMLAH:</Label>
-                      <div className="flex items-center gap-6">
-                        <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))} className="h-12 w-12 rounded-2xl bg-slate-50 hover:bg-amber-50 border border-slate-100 transition-all active:scale-[0.85]"><Minus className="h-5 w-5 font-black" /></Button>
-                        <span className="font-black text-2xl w-10 text-center tabular-nums text-slate-900 group-hover:scale-110 transition-transform">{quantity}</span>
-                        <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.min(10, q + 1))} className="h-12 w-12 rounded-2xl bg-slate-50 hover:bg-amber-50 border border-slate-100 transition-all active:scale-[0.85]"><Plus className="h-5 w-5 font-black" /></Button>
-                      </div>
-                   </div>
-
-                   <div className={`p-5 rounded-2xl text-[11px] font-black tracking-widest text-center border shadow-sm transition-all duration-500 ${quantity >= 3 ? 'bg-green-50 border-green-200 text-green-700 animate-pulse' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
-                      {quantity < 3 ? "💡 BELI 3 UNTUK HARGA SPESIAL & BONUS!" : "✨ DISKON BUNDLE AKTIF: ANDA HEMAT 150RB!"}
-                   </div>
-
-                   <div className="space-y-4 px-2">
-                      <div className="flex justify-between text-[13px] font-bold">
-                        <span className="text-slate-400 uppercase tracking-widest">Subtotal</span>
-                        <span className={isAnyDiscountApplied ? "line-through text-slate-300" : "text-slate-600 tabular-nums"}>{formatCurrency(originalTotalAmount)}</span>
-                      </div>
-                      <div className="pt-5 border-t border-dashed border-slate-200 flex justify-between items-center group">
-                        <span className="font-black text-slate-400 text-[11px] uppercase tracking-[0.2em] group-hover:text-slate-900 transition-colors">Total Bayar</span>
-                        <span className="text-3xl font-black text-amber-600 tabular-nums tracking-tighter shadow-orange-100 drop-shadow-sm">{formatCurrency(totalAmount)}</span>
-                      </div>
-                   </div>
-
-                   <div className="space-y-6 pt-8 border-t border-slate-100">
-                      <div className="grid gap-6">
-                        <div className="space-y-2.5">
-                           <Label className="text-[11px] font-black uppercase text-slate-400 ml-1 tracking-widest flex items-center gap-2"><User className="w-3.5 h-3.5" /> Nama Lengkap</Label>
-                           <Input placeholder="Nama Pengiriman" value={userName} onChange={e => setUserName(e.target.value)} className="h-14 bg-white border-slate-200 rounded-2xl text-[13px] font-bold px-8 shadow-sm focus:ring-amber-500 transition-all focus:border-amber-400" />
+          <div ref={formRef} className="lg:w-[500px] w-full animate-in fade-in slide-in-from-right-10 duration-1000">
+             <Card className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.2)] overflow-hidden border border-white/40 ring-1 ring-black/5">
+                <CardContent className="p-8 sm:p-12 space-y-10">
+                  <SectionTitle icon={ShoppingCart}>Data Pesanan & Pengiriman</SectionTitle>
+                  
+                  <div className="space-y-8">
+                    <div className="flex gap-6 items-center bg-slate-50/80 p-6 rounded-[2rem] border border-slate-100 shadow-inner group transition-all hover:bg-white hover:shadow-xl hover:-translate-y-1">
+                        <div className="w-20 h-20 bg-white rounded-2xl border border-slate-200 p-3 flex items-center justify-center shrink-0 shadow-sm group-hover:rotate-6 transition-transform">
+                          <span className="text-4xl">✨</span>
                         </div>
-                        <div className="space-y-2.5">
-                           <Label className="text-[11px] font-black uppercase text-slate-400 ml-1 tracking-widest flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> WhatsApp</Label>
-                           <Input placeholder="08123456789" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="h-14 bg-white border-slate-200 rounded-2xl text-[13px] font-bold px-8 shadow-sm focus:ring-amber-500 transition-all focus:border-amber-400" />
+                        <div className="space-y-1">
+                          <h4 className="font-black text-slate-900 text-[16px] tracking-tight">{brandName}</h4>
+                          <p className="text-[12px] text-slate-500 font-bold uppercase tracking-widest tabular-nums">{formatCurrency(300000)} / BOX</p>
                         </div>
-                        <AdressID 
-                          selectedProvince={selectedProvince} setSelectedProvince={setSelectedProvince} 
-                          userAddress={userAddress} setUserAddress={setUserAddress} 
-                          kota={kota} setKota={setKota} 
-                          kecamatan={kecamatan} setKecamatan={setKecamatan} 
-                          kodePos={kodePos} setKodePos={setKodePos} 
-                        />
-                      </div>
+                    </div>
 
-                      <div className="space-y-4 pt-4">
-                        <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="grid grid-cols-1 gap-3">
-                          {paymentMethods.slice(0, 5).map((method) => (
-                            <div key={method.code} onClick={() => setSelectedPaymentMethod(method.code)} className={`relative flex items-center p-5 rounded-2xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === method.code ? 'border-amber-500 bg-amber-50/30' : 'border-slate-100 hover:border-slate-200 bg-white'}`}>
-                              <RadioGroupItem value={method.code} id={method.code} className="sr-only" />
-                              <div className="flex-1">
-                                <Label htmlFor={method.code} className="text-[13px] font-black uppercase tracking-tight cursor-pointer block">{method.name}</Label>
-                                <span className="text-[11px] font-bold text-slate-400 block mt-0.5">{method.description}</span>
+                    <div className="flex justify-between items-center bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm group">
+                        <Label className="text-[12px] font-black uppercase text-slate-400 tracking-widest ml-1">JUMLAH:</Label>
+                        <div className="flex items-center gap-6">
+                          <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))} className="h-12 w-12 rounded-2xl bg-slate-50 hover:bg-amber-50 border border-slate-100 transition-all active:scale-[0.85]"><Minus className="h-5 w-5 font-black" /></Button>
+                          <span className="font-black text-2xl w-10 text-center tabular-nums text-slate-900 group-hover:scale-110 transition-transform">{quantity}</span>
+                          <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.min(10, q + 1))} className="h-12 w-12 rounded-2xl bg-slate-50 hover:bg-amber-50 border border-slate-100 transition-all active:scale-[0.85]"><Plus className="h-5 w-5 font-black" /></Button>
+                        </div>
+                    </div>
+
+                    <div className={`p-5 rounded-2xl text-[11px] font-black tracking-widest text-center border shadow-sm transition-all duration-500 ${quantity >= 3 ? 'bg-green-50 border-green-200 text-green-700 animate-pulse' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+                        {quantity < 3 ? "💡 BELI 3 UNTUK HARGA SPESIAL & BONUS!" : "✨ DISKON BUNDLE AKTIF: ANDA HEMAT 150RB!"}
+                    </div>
+
+                    <div className="space-y-4 px-2">
+                        <div className="flex justify-between text-[13px] font-bold">
+                          <span className="text-slate-400 uppercase tracking-widest">Subtotal</span>
+                          <span className={isAnyDiscountApplied ? "line-through text-slate-300" : "text-slate-600 tabular-nums"}>{formatCurrency(originalTotalAmount)}</span>
+                        </div>
+                        <div className="pt-5 border-t border-dashed border-slate-200 flex justify-between items-center group">
+                          <span className="font-black text-slate-400 text-[11px] uppercase tracking-[0.2em] group-hover:text-slate-900 transition-colors">Total Bayar</span>
+                          <span className="text-3xl font-black text-amber-600 tabular-nums tracking-tighter shadow-orange-100 drop-shadow-sm">{formatCurrency(totalAmount)}</span>
+                        </div>
+                    </div>
+
+                    <div className="space-y-6 pt-8 border-t border-slate-100">
+                        <div className="grid gap-6">
+                          <div className="space-y-2.5">
+                            <Label className="text-[11px] font-black uppercase text-slate-400 ml-1 tracking-widest flex items-center gap-2"><User className="w-3.5 h-3.5" /> Nama Lengkap</Label>
+                            <Input placeholder="Nama Pengiriman" value={userName} onChange={e => setUserName(e.target.value)} className="h-14 bg-white border-slate-200 rounded-2xl text-[13px] font-bold px-8 shadow-sm focus:ring-amber-500 transition-all focus:border-amber-400" />
+                          </div>
+                          <div className="space-y-2.5">
+                            <Label className="text-[11px] font-black uppercase text-slate-400 ml-1 tracking-widest flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> WhatsApp</Label>
+                            <Input placeholder="08123456789" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="h-14 bg-white border-slate-200 rounded-2xl text-[13px] font-bold px-8 shadow-sm focus:ring-amber-500 transition-all focus:border-amber-400" />
+                          </div>
+                          <AdressID 
+                            selectedProvince={selectedProvince} setSelectedProvince={setSelectedProvince} 
+                            userAddress={userAddress} setUserAddress={setUserAddress} 
+                            kota={kota} setKota={setKota} 
+                            kecamatan={kecamatan} setKecamatan={setKecamatan} 
+                            kodePos={kodePos} setKodePos={setKodePos} 
+                          />
+                        </div>
+
+                        <div className="space-y-4 pt-4">
+                          <Label className="text-[11px] font-black uppercase text-slate-400 ml-1 tracking-widest">Pilih Metode Pembayaran</Label>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {[
+                                { code: 'QRIS', name: 'QRIS', icon: '⚡' },
+                                { code: 'DANA', name: 'DANA', icon: '🔵' },
+                                { code: 'OVO', name: 'OVO', icon: '🟣' },
+                                { code: 'SHOPEEPAY', name: 'SPay', icon: '🟠' },
+                                { code: 'BCA_MANUAL', name: 'BCA', icon: '🏦' },
+                                { code: 'BCAVA', name: 'BCA VA', icon: '🏦' },
+                                { code: 'BNIVA', name: 'BNI VA', icon: '🏦' },
+                                { code: 'BRIVA', name: 'BRI VA', icon: '🏦' },
+                                { code: 'MANDIRIVA', name: 'Mandiri VA', icon: '🏦' },
+                                { code: 'INDOMARET', name: 'Indomaret', icon: '🏪' },
+                                { code: 'ALFAMART', name: 'Alfamart', icon: '🏪' },
+                                { code: 'ALFAMIDI', name: 'Alfamidi', icon: '🏪' },
+                                { code: 'COD', name: 'COD', icon: '📦' }
+                            ].map((method) => (
+                              <div key={method.code} onClick={() => setSelectedPaymentMethod(method.code)} className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center gap-2 text-center h-24 ${selectedPaymentMethod === method.code ? 'border-amber-500 bg-amber-50/50' : 'border-slate-50 bg-slate-50/50 hover:bg-slate-100'}`}>
+                                <span className="text-xl">{method.icon}</span>
+                                <span className="text-[10px] font-black uppercase tracking-tight leading-none">{method.name}</span>
+                                {selectedPaymentMethod === method.code && <Check className="w-3 h-3 text-amber-500 absolute top-3 right-3" />}
                               </div>
-                              {selectedPaymentMethod === method.code && <Check className="w-5 h-5 text-amber-500 animate-in zoom-in" />}
-                            </div>
-                          ))}
+                            ))}
+                          </div>
+                        </div>
 
-                          {!showAllPayments && (
-                            <Button 
-                              variant="ghost" 
-                              onClick={() => setShowAllPayments(true)}
-                              className="w-full h-14 border border-dashed border-slate-200 text-slate-400 rounded-2xl font-bold text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all"
-                            >
-                              Metode Pembayaran Lainnya...
-                            </Button>
-                          )}
-
-                          {showAllPayments && paymentMethods.slice(5).map((method) => (
-                            <div key={method.code} onClick={() => setSelectedPaymentMethod(method.code)} className={`relative flex items-center p-5 rounded-2xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === method.code ? 'border-amber-500 bg-amber-50/30' : 'border-slate-100 hover:border-slate-200 bg-white'}`}>
-                              <RadioGroupItem value={method.code} id={method.code} className="sr-only" />
-                              <div className="flex-1">
-                                <Label htmlFor={method.code} className="text-[13px] font-black uppercase tracking-tight cursor-pointer block">{method.name}</Label>
-                                <span className="text-[11px] font-bold text-slate-400 block mt-0.5">{method.description}</span>
-                              </div>
-                              {selectedPaymentMethod === method.code && <Check className="w-5 h-5 text-amber-500 animate-in zoom-in" />}
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      </div>
-
-                      <div className="pt-10">
-                         <Button onClick={handleCreatePayment} disabled={loading} className="w-full h-20 bg-amber-600 hover:bg-amber-700 text-white rounded-[2rem] shadow-[0_20px_50px_rgba(212,175,55,0.4)] border-b-[6px] border-amber-800 transition-all active:scale-[0.97] active:border-b-0 flex items-center justify-center gap-4 text-lg font-black tracking-widest uppercase italic-none">
-                            {loading ? "MEMPROSES..." : "Pesan Sekarang →"}
-                         </Button>
-                         <p className="text-center text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-6 flex items-center justify-center gap-2">
-                            <ShieldCheck className="w-4 h-4" /> PEMBAYARAN DIJAMIN AMAN & TERPERCAYA
-                         </p>
-                      </div>
-                   </div>
-                </div>
-             </div>
+                        <div className="pt-10">
+                          <Button onClick={handleCreatePayment} disabled={loading} className="w-full h-20 bg-amber-600 hover:bg-amber-700 text-white rounded-[2rem] shadow-[0_20px_50px_rgba(212,175,55,0.4)] border-b-[6px] border-amber-800 transition-all active:scale-[0.97] active:border-b-0 flex items-center justify-center gap-4 text-lg font-black tracking-widest uppercase italic-none">
+                              {loading ? "MEMPROSES..." : "Pesan Sekarang →"}
+                          </Button>
+                          <p className="text-center text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-6 flex items-center justify-center gap-2">
+                              <ShieldCheck className="w-4 h-4" /> PEMBAYARAN DIJAMIN AMAN & TERPERCAYA
+                          </p>
+                        </div>
+                    </div>
+                  </div>
+                </CardContent>
+             </Card>
           </div>
         </div>
 
@@ -1865,19 +1872,7 @@ export default function DrelfLanding() {
         </DialogContent>
       </Dialog>
 
-      {/* Sticky Mobile CTA */}
-      <div className="fixed bottom-6 left-6 right-6 z-50 lg:hidden animate-in slide-in-from-bottom-20 duration-1000">
-         <Button 
-            onClick={() => {
-              if (userName && phoneNumber && userAddress) handleCreatePayment();
-              else formRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="w-full h-20 bg-slate-900 hover:bg-black text-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-b-[6px] border-slate-800 flex items-center justify-center gap-4 text-base font-black uppercase tracking-widest active:scale-95 active:border-b-0 transition-all"
-         >
-            {userName && phoneNumber ? "BAYAR SEKARANG →" : "PESAN DRELF SEKARANG"}
-         </Button>
-      </div>
-
+      <Sonner position="top-center" expand={true} richColors />
     </div>
   );
 }
