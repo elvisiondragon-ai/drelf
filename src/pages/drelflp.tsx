@@ -792,6 +792,7 @@ export default function DrelfLanding() {
   const [paymentData, setPaymentData] = useState<any>(null);
   const [showPaymentInstructions, setShowPaymentInstructions] = useState(false);
   
+  const [showAllPayments, setShowAllPayments] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewForm, setReviewForm] = useState({ name: '', email: '', rating: 5, content: '' });
@@ -1113,9 +1114,29 @@ export default function DrelfLanding() {
                       </div>
 
                       <div className="space-y-4 pt-4">
-                        <Label className="text-[11px] font-black uppercase text-slate-400 ml-1 tracking-widest">Metode Pembayaran</Label>
                         <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="grid grid-cols-1 gap-3">
-                          {paymentMethods.map((method) => (
+                          {paymentMethods.slice(0, 5).map((method) => (
+                            <div key={method.code} onClick={() => setSelectedPaymentMethod(method.code)} className={`relative flex items-center p-5 rounded-2xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === method.code ? 'border-amber-500 bg-amber-50/30' : 'border-slate-100 hover:border-slate-200 bg-white'}`}>
+                              <RadioGroupItem value={method.code} id={method.code} className="sr-only" />
+                              <div className="flex-1">
+                                <Label htmlFor={method.code} className="text-[13px] font-black uppercase tracking-tight cursor-pointer block">{method.name}</Label>
+                                <span className="text-[11px] font-bold text-slate-400 block mt-0.5">{method.description}</span>
+                              </div>
+                              {selectedPaymentMethod === method.code && <Check className="w-5 h-5 text-amber-500 animate-in zoom-in" />}
+                            </div>
+                          ))}
+
+                          {!showAllPayments && (
+                            <Button 
+                              variant="ghost" 
+                              onClick={() => setShowAllPayments(true)}
+                              className="w-full h-14 border border-dashed border-slate-200 text-slate-400 rounded-2xl font-bold text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all"
+                            >
+                              Metode Pembayaran Lainnya...
+                            </Button>
+                          )}
+
+                          {showAllPayments && paymentMethods.slice(5).map((method) => (
                             <div key={method.code} onClick={() => setSelectedPaymentMethod(method.code)} className={`relative flex items-center p-5 rounded-2xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === method.code ? 'border-amber-500 bg-amber-50/30' : 'border-slate-100 hover:border-slate-200 bg-white'}`}>
                               <RadioGroupItem value={method.code} id={method.code} className="sr-only" />
                               <div className="flex-1">
