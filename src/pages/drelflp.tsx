@@ -1025,7 +1025,7 @@ export default function DrelfLanding() {
 
   return (
     <div className="min-h-screen bg-slate-50 relative">
-      <Sonner position="top-center" expand={true} richColors />
+      <Toaster position="top-center" expand={true} richColors />
       
       {/* Language Switcher */}
       <div className="fixed top-6 right-6 z-50 flex items-center gap-2">
