@@ -17,122 +17,28 @@ import { Separator } from '@/components/ui/separator';
 import { getFbcFbpCookies, getClientIp } from '@/utils';
 
 // --- Embedded Adress Component ---
-const ApiCombobox = ({
-  options, value, onSelect, placeholder, searchPlaceholder, disabled, isOpen, setOpen
-}: any) => (
-  <Popover open={isOpen} onOpenChange={setOpen}>
-    <PopoverTrigger asChild>
-      <Button
-        variant="outline"
-        role="combobox"
-        aria-expanded={isOpen}
-        className="w-full justify-between font-semibold text-left h-16 bg-slate-50 border-slate-200 text-[13px]"
-        disabled={disabled}
-      >
-        <span className="truncate">{value ? options.find((opt: any) => opt.name === value)?.name : placeholder}</span>
-        <ChevronsUpDown className="ml-2 h-6 w-6 shrink-0 opacity-50" />
-      </Button>
-    </PopoverTrigger>
-    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-      <Command>
-        <CommandInput placeholder={searchPlaceholder} className="text-[13px] h-14" />
-        <CommandList>
-          <CommandEmpty className="text-[13px] p-5">Tidak ditemukan.</CommandEmpty>
-          <CommandGroup>
-            {options.map((opt: any) => (
-              <CommandItem
-                key={opt.id}
-                value={opt.name}
-                onSelect={() => {
-                  onSelect(opt);
-                  setOpen(false);
-                }}
-                className="text-[13px] py-4"
-              >
-                <Check className={cn("mr-3 h-6 w-6", value === opt.name ? "opacity-100" : "opacity-0")} />
-                {opt.name}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    </PopoverContent>
-  </Popover>
-);
-
 const AdressID = ({
   selectedProvince, setSelectedProvince, userAddress, setUserAddress,
   kota, setKota, kecamatan, setKecamatan, kodePos, setKodePos
 }: any) => {
-  const [provincesData, setProvincesData] = useState<any[]>([]);
-  const [citiesData, setCitiesData] = useState<any[]>([]);
-  const [selectedProvId, setSelectedProvId] = useState('');
-  
-  const [openProv, setOpenProv] = useState(false);
-  const [openCity, setOpenCity] = useState(false);
-
-  const [search, setSearch] = useState('');
-  const goApiKey = 'd1880b4e-671b-58f8-b099-8321ac33';
-
-  useEffect(() => {
-    fetch(`https://api.goapi.io/regional/provinsi?api_key=${goApiKey}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') setProvincesData(data.data);
-      })
-      .catch(err => console.error('[GoAPI] Fetch provinces error:', err));
-  }, []);
-
-  useEffect(() => {
-    if (selectedProvId) {
-      fetch(`https://api.goapi.io/regional/kota?provinsi_id=${selectedProvId}&api_key=${goApiKey}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'success') setCitiesData(data.data);
-        })
-        .catch(err => console.error('[GoAPI] Fetch cities error:', err));
-    } else {
-      setCitiesData([]);
-    }
-  }, [selectedProvId]);
-
   return (
     <div className="space-y-6 pt-2">
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
         <div className="space-y-2.5">
           <Label className="text-[13px] font-semibold uppercase tracking-wider text-slate-600 ml-1">Provinsi</Label>
-          <ApiCombobox
-            options={provincesData} value={selectedProvince}
-            onSelect={(opt: any) => {
-              setSelectedProvince(opt.name); setSelectedProvId(opt.id);
-              setKota(''); setSearch(''); setKecamatan(''); setKodePos(''); setUserAddress('');
-            }}
-            placeholder="Pilih Provinsi..." searchPlaceholder="Cari provinsi..."
-            isOpen={openProv} setOpen={setOpenProv}
-          />
+          <Input value={selectedProvince} onChange={(e) => setSelectedProvince(e.target.value)} placeholder="Provinsi" className="h-16 bg-slate-50 border-slate-200 text-[13px] font-medium rounded-2xl px-6" required />
         </div>
         <div className="space-y-2.5">
           <Label className="text-[13px] font-semibold uppercase tracking-wider text-slate-600 ml-1">Kota / Kabupaten</Label>
-          <ApiCombobox
-            options={citiesData} value={kota} disabled={!selectedProvId}
-            onSelect={(opt: any) => {
-              setKota(opt.name);
-              setSearch(''); setKecamatan(''); setKodePos(''); setUserAddress('');
-            }}
-            placeholder="Pilih Kota..." searchPlaceholder="Cari kota..."
-            isOpen={openCity} setOpen={setOpenCity}
-          />
+          <Input value={kota} onChange={(e) => setKota(e.target.value)} placeholder="Kota / Kabupaten" className="h-16 bg-slate-50 border-slate-200 text-[13px] font-medium rounded-2xl px-6" required />
         </div>
       </div>
 
       <div className="space-y-2.5">
         <Label className="text-[13px] font-semibold uppercase tracking-wider text-slate-600 ml-1">Alamat Lengkap</Label>
         <Input
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setUserAddress(e.target.value);
-          }}
+          value={userAddress}
+          onChange={(e) => setUserAddress(e.target.value)}
           placeholder="Ketikan alamat rumah anda (Nama Jalan, No Rumah, Blok)"
           className="h-16 bg-slate-50 border-slate-200 text-[13px] font-medium rounded-2xl px-6"
           required
@@ -142,11 +48,11 @@ const AdressID = ({
       <div className="grid grid-cols-2 gap-5">
         <div className="space-y-2.5">
           <Label className="text-[13px] font-semibold uppercase tracking-wider text-slate-600 ml-1">Kecamatan</Label>
-          <Input value={kecamatan} onChange={(e) => setKecamatan(e.target.value)} placeholder="Kecamatan" className="h-16 bg-slate-50 border-slate-200 text-[13px] font-medium rounded-2xl" required />
+          <Input value={kecamatan} onChange={(e) => setKecamatan(e.target.value)} placeholder="Kecamatan" className="h-16 bg-slate-50 border-slate-200 text-[13px] font-medium rounded-2xl px-6" required />
         </div>
         <div className="space-y-2.5">
           <Label className="text-[13px] font-semibold uppercase tracking-wider text-slate-600 ml-1">Kode Pos</Label>
-          <Input value={kodePos} onChange={(e) => setKodePos(e.target.value)} placeholder="00000" className="h-16 bg-slate-50 border-slate-200 text-[13px] font-medium rounded-2xl" required />
+          <Input value={kodePos} onChange={(e) => setKodePos(e.target.value)} placeholder="00000" className="h-16 bg-slate-50 border-slate-200 text-[13px] font-medium rounded-2xl px-6" required />
         </div>
       </div>
     </div>
@@ -165,7 +71,7 @@ const SectionTitle = ({ children, icon: Icon }: any) => (
 export default function DrelfPaymentPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const affiliateRef = searchParams.get('id');
+  const affiliateRef = searchParams.get('ref') || searchParams.get('id');
   const ctwaId = searchParams.get('ctwa_id');
   const purchaseFiredRef = useRef(false);
   
